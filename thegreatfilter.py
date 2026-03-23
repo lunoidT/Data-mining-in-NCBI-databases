@@ -6,7 +6,7 @@ with open("gene_info") as infile:
     geneID_to_name = {}
     for line in infile:
         if tax_id == line.split()[0]:
-            geneID_to_name[line.split()[1]] = line.split()[8]
+            geneID_to_name[line.split()[1]] = line.split("\t")[8]
 
 # Create file containing relevant information about organism
 with open("gene2pubmed") as infile, open("processedfile.py", "w") as outfile:
