@@ -1,5 +1,6 @@
 
 processedfile = "processedfile.csv"
+cytofile = "cytoscaper.csv"
 ID_dict = {}
 
 """with open(processedfile) as infile:
@@ -23,3 +24,25 @@ with open(processedfile) as infile:
         else:
             ID_dict[PubID].append(gene_name)
 
+#print(ID_dict)
+# counting  
+instance_dict = {} # {combination, weight}
+for PubID,names in ID_dict.items():
+    if len(names) > 1:
+        # make all combinations
+        for i in range(len(names)-1):
+            for j in range(i+1,len(names)):
+
+                # add to dict / increment
+                m = tuple(sorted([names[i],names[j]]))
+                if m not in instance_dict:
+                    instance_dict[m] = 1
+                else:
+                    instance_dict[m] += 1
+            
+
+# making it readable for cytoscape
+with open(cytofile, "w") as outfile:
+    outfile.write("name1\tname2\tweight\n")
+    for names,weight in instance_dict.items():
+        outfile.write("\t".join(names) + "\t" + str(weight) + "\n")
