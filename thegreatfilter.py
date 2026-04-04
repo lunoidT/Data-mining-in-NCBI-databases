@@ -9,7 +9,7 @@ def taxfilter(tax_id:str):
                 geneID_to_name[line.split()[1]] = line.split("\t")[8]
 
     # Create file containing relevant information about organism
-    with open("gene2pubmed") as infile, open("processedfile.csv", "w") as outfile:
+    with open("gene2pubmed") as infile, open("processedfile_" + tax_id + ".csv", "w") as outfile:
         outfile.write("#GeneID\tPubMed_ID\tGene_name\n")
         for line in infile:
             if tax_id == line.split()[0]:

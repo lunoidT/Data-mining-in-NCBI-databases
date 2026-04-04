@@ -15,6 +15,7 @@ def ID_to_names(processedfile:str) -> dict:
     return ID_dict
 
 
+#Note: ignores genes with no connections, should that be changed?
 def combinations(ID_dict:dict) -> dict:
     """ From the ID_to_names dictionary, creates a dictionary with different gene combinations and their weight """
     # combining different Pubmed IDs and counting their weight
@@ -32,12 +33,3 @@ def combinations(ID_dict:dict) -> dict:
                     else:
                         instance_dict[m] += 1
     return instance_dict
-
-
-def mkcytofile(cytofile:str,instance_dict:dict):
-    """ Writes dictionary to file """
-    # making it readable for cytoscape
-    with open(cytofile, "w") as outfile:
-        outfile.write("name1\tname2\tweight\n")
-        for names,weight in instance_dict.items():
-            outfile.write("\t".join(names) + "\t" + str(weight) + "\n")
