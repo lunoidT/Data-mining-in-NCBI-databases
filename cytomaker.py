@@ -23,7 +23,7 @@ def usage(msg=None):
 
 def parseCommand():
     """ parsing commandline options, returns dictionary with options """
-    options = {"taxid":None, "filtering_type":None, "filtering_amount":None}
+    options = {"tax_id":None, "filtering_type":None, "filtering_amount":None}
 
     while len(sys.argv) > 1:
         arg = sys.argv.pop(1)
@@ -83,14 +83,14 @@ try:
         ID_dict = ID_to_names("processedfile_" + file_options["tax_id"] + ".csv")
         instance_dict = combinations(ID_dict)
 
-    # save unfiltered version for later use 
-    cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
+        # save unfiltered version for later use 
+        cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
 
     # write filtered file 
     if file_options["filtering_type"] != None:
         if file_options["filtering_type"] == "-w":
             filtered_dict = weightfilter(instance_dict,file_options["filtering_amount"])
-            cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv",instance_dict)
+            cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv",filtered_dict)
         
         # continue to make filtered versions...
 
