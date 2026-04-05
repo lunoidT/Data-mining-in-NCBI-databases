@@ -17,7 +17,7 @@ def taxfilter(filename_info,file_gene2pubmed,tax_id:str) -> dict:
                 geneID, PubID = line.split()[1], line.split()[2]
 
                 if PubID not in ID2names:
-                    ID2names[PubID] = {geneID_to_name[geneID]}
+                    ID2names[PubID] = set(geneID_to_name[geneID])
                 else:
                     ID2names[PubID].add(geneID_to_name[geneID])
     

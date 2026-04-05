@@ -27,11 +27,12 @@ def help():
     print("-w <int> Filtering based on weight of connection between genes")
     print("-c <int> Filtering based on amount of connections to gene")
     print()
-    print("-q <int>: Quickfilter option, for experienced users. Made for a quick and dirty solution.")
+    print("-q <int>: Quickfilter option, for experienced users. Made for a quick and dirty solution.") 
+    print("Ignores Pubmed articles with too many entries, since that can be a bottleneck for runtime and memory.")
     print("Note: Quckfiltering is ignored if file for tax ID is already loaded")
     sys.exit(1)
 
-def parseCommand():
+def parse_command():
     """ parsing commandline options, returns dictionary with options """
     options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None, "quick_filter":None}
 
@@ -105,7 +106,8 @@ def cytowrite(cytofile:str,instance_dict:dict):
 #### MAIN ####
 
 # Obtain options from commandline
-file_options,filtering = parseCommand()
+file_options,filtering = parse_command()
+# Obtain date, and add underscore so it can be used in file name
 date = "_".join( str(datetime.now()).split() )
 
 try:

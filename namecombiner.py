@@ -4,6 +4,7 @@ def combinations(ID2names:dict,max_size=-1) -> dict:
     # combining different Pubmed IDs and counting their weight
     instance_dict = {} # {combination, weight}
 
+    # SEJ SAMPLING AF STORE LIST
     # For progress bar
     progress = 0
     temp_progress = None
