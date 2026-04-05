@@ -2,8 +2,8 @@
 import sys
 import os
 from datetime import datetime
-from thegreatfilter import taxfilter
-from PubMed_sorter import ID_to_names, combinations
+from taxfiltering import taxfilter 
+from namecombiner import combinations 
 from filtering import weightfilter, connectionfilter
 
 # Files
@@ -94,12 +94,11 @@ try:
         print("Loaded files successfully.")
     else:
         # Process infomation from genbank files to a file
-        taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
+        ID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
         # Load into dictionaries
-        ID_dict = ID_to_names("processedfile_" + file_options["tax_id"] + ".csv")
-        instance_dict = combinations(ID_dict)
+        instance_dict = combinations(ID2names)
 
-        print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}")
+        print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
         # Save unfiltered version for later use 
         cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
     
@@ -110,12 +109,12 @@ try:
             if file_options["weight_filtering"] != None:
                 instance_dict = weightfilter(instance_dict,file_options["weight_filtering"])
             elif file_options["connection_filtering"] != None:
-                instance_dict = weightfilter(instance_dict,file_options["connection_filtering"])
+                instance_dict = connectionfilter(instance_dict,file_options["connection_filtering"])
             else:
                 usage("File option not found or missing.")
 
         # Write filtered file
-        print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv"}")
+        print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv"}...")
         cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv",instance_dict)
 
     print("Program finished.")
