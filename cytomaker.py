@@ -16,10 +16,19 @@ def usage(msg=None):
     if msg is not None:
         print(msg, "\n")
 
-    print ("Usage: cytomaker.py <tax_id> [filter]")
+    print("Usage: cytomaker.py <tax_id> [filter] [-q]")
+    print("For more information enter: cytomaker.py help")
+
+    sys.exit(1)
+
+def help():
+    """ More information about options """
+    print("Usage: cytomaker.py <tax_id> [filter] [-q]")
     print("Filtering options:")
     print("-w <int> Filtering based on weight of connection between genes")
     print("-c <int> Filtering based on amount of connections to gene")
+    print()
+    print("-q: Quickfilter option, for experienced users") # not impemented
 
     sys.exit(1)
 
@@ -31,8 +40,14 @@ def parseCommand():
     while len(sys.argv) > 1:
         arg = sys.argv.pop(1)
         
-        # First option must be tax ID
-        if options["tax_id"] == None:
+        # First option must be tax ID or "help"
+        if options["tax_id"] == None and arg == "help":
+            help()
+        elif options["tax_id"] == None:
+            try:
+                int(arg)
+            except ValueError:
+                usage("tax ID amount must be an integer")
             options["tax_id"] = arg
 
         # Saving filters
