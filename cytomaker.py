@@ -6,9 +6,11 @@ from thegreatfilter import taxfilter
 from PubMed_sorter import ID_to_names, combinations
 from filtering import weightfilter, connectionfilter
 
-# Insert welcome message?
 # things to consider:
 # - multifiltering
+
+filename_info = "gene_info"
+file_gene2pubmed = "dummy2pubmed" #"gene2pubmed"
 
 #### Funtions for parsing commandline ###
 def usage(msg=None):
@@ -74,22 +76,27 @@ file_options = parseCommand()
 try:
     # find out if Taxid already had been mined, 
     # if so load the cytoscape file to a dict and use that for filtering
+    print("Loading files...")
     if "cytofile_" + file_options["tax_id"] + ".csv" in os.listdir():
         instance_dict = cytoload("cytofile_" + file_options["tax_id"] + ".csv")
+        print("Loaded files successfully.")
     else:
         # Process infomation from genbank files to a file
-        taxfilter(file_options["tax_id"])
+        taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
         # load into dictionaries
         ID_dict = ID_to_names("processedfile_" + file_options["tax_id"] + ".csv")
         instance_dict = combinations(ID_dict)
 
+        print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}")
         # save unfiltered version for later use 
         cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
-
+    
     # write filtered file 
     if file_options["filtering_type"] != None:
+        print("Filtering started...")
         if file_options["filtering_type"] == "-w":
             filtered_dict = weightfilter(instance_dict,file_options["filtering_amount"])
+            print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv"}")
             cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv",filtered_dict)
         
         # continue to make filtered versions...

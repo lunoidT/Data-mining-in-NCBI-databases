@@ -16,12 +16,12 @@ def ID_to_names(processedfile:str) -> dict:
 
 
 #Note: ignores genes with no connections, should that be changed?
-def combinations(ID_dict:dict) -> dict:
+def combinations(ID_dict:dict,min_size=1) -> dict:
     """ From the ID_to_names dictionary, creates a dictionary with different gene combinations and their weight """
     # combining different Pubmed IDs and counting their weight
     instance_dict = {} # {combination, weight}
     for names in ID_dict.values():
-        if len(names) > 1:
+        if len(names) > min_size:
             # make all combinations
             for i in range(len(names)-1):
                 for j in range(i+1,len(names)):
