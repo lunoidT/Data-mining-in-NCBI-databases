@@ -6,7 +6,6 @@ from taxfiltering import taxfilter
 from namecombiner import combinations 
 from filtering import weightfilter, connectionfilter
 
-# crazy comment
 # Files
 filename_info = "smalldummy_info" #"gene_info"
 file_gene2pubmed = "dummy2pubmed" #"gene2pubmed"
@@ -28,7 +27,7 @@ def help():
     print("-w <int> Filtering based on weight of connection between genes")
     print("-c <int> Filtering based on amount of connections to gene")
     print()
-    print("-q <int>: Quickfilter option, for experienced users. Made for a quick and dirty")
+    print("-q <int>: Quickfilter option, for experienced users. Made for a quick and dirty solution.")
     print("Note: Quckfiltering is ignored if file for tax ID is already loaded")
     sys.exit(1)
 
@@ -107,6 +106,7 @@ def cytowrite(cytofile:str,instance_dict:dict):
 
 # Obtain options from commandline
 file_options,filtering = parseCommand()
+date = "_".join( str(datetime.now()).split() )
 
 try:
     # Find out if Taxid already had been mined, 
@@ -125,8 +125,8 @@ try:
         if file_options["quick_filter"] != None:
             print("Quick filtering activated.")
             instance_dict = combinations(ID2names,file_options["quick_filter"])
-            print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + str(datetime.now()) + ".csv"}...")
-            cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + str(datetime.now()) + ".csv",instance_dict)
+            print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
+            cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict)
         else:
             instance_dict = combinations(ID2names)
             print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
@@ -145,8 +145,8 @@ try:
                 usage("File option not found or missing.")
 
         # Write filtered file
-        print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv"}...")
-        cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv",instance_dict)
+        print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv"}...")
+        cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv",instance_dict)
 
     print("Program finished.")
 
