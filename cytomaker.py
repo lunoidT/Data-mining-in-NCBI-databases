@@ -6,6 +6,7 @@ from taxfiltering import taxfilter
 from namecombiner import combinations 
 from filtering import weightfilter, connectionfilter
 
+# crazy comment
 # Files
 filename_info = "smalldummy_info" #"gene_info"
 file_gene2pubmed = "dummy2pubmed" #"gene2pubmed"
@@ -16,9 +17,8 @@ def usage(msg=None):
     if msg is not None:
         print(msg, "\n")
 
-    print("Usage: cytomaker.py <tax_id> [filter] [-q]")
+    print("Usage: cytomaker.py <tax_id> [filter] [-q] <int>")
     print("For more information enter: cytomaker.py help")
-
     sys.exit(1)
 
 def help():
@@ -28,13 +28,13 @@ def help():
     print("-w <int> Filtering based on weight of connection between genes")
     print("-c <int> Filtering based on amount of connections to gene")
     print()
-    print("-q: Quickfilter option, for experienced users") # not impemented
-
+    print("-q <int>: Quickfilter option, for experienced users. Made for a quick and dirty")
+    print("Note: Quckfiltering is ignored if file for tax ID is already loaded")
     sys.exit(1)
 
 def parseCommand():
     """ parsing commandline options, returns dictionary with options """
-    options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None}
+    options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None, "quick_filter":None}
 
     filtering = 0
     while len(sys.argv) > 1:
@@ -66,6 +66,14 @@ def parseCommand():
                 usage("Filter amount must be an integer")
             options["connection_filtering"] = amount
             filtering += 1
+
+        # Activating quickfiltering
+        elif options["quick_filter"] == None and arg == "-q":
+            try:
+                amount = int(sys.argv.pop(1))
+            except ValueError:
+                usage("Filter amount must be an integer")
+            options["quick_filter"] = amount
 
         else:
             usage()
@@ -110,12 +118,20 @@ try:
     else:
         # Process infomation from genbank files to a file
         ID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
-        # Load into dictionaries
-        instance_dict = combinations(ID2names)
 
-        print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
-        # Save unfiltered version for later use 
-        cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
+        # Load into dictionaries
+        print("Combining names...")
+        # If quickfilter is activated articles with less or equal to x amount is ignored, making combinations process faster
+        if file_options["quick_filter"] != None:
+            print("Quick filtering activated.")
+            instance_dict = combinations(ID2names,file_options["quick_filter"])
+            print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + str(datetime.now()) + ".csv"}...")
+            cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + str(datetime.now()) + ".csv",instance_dict)
+        else:
+            instance_dict = combinations(ID2names)
+            print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
+            # Save unfiltered version for later use 
+            cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
     
     # Filter instance dict
     if filtering > 0:
