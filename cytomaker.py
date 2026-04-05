@@ -9,7 +9,7 @@ from filtering import weightfilter, connectionfilter
 # things to consider:
 # - multifiltering
 
-filename_info = "gene_info"
+filename_info = "smalldummy_info" #"gene_info"
 file_gene2pubmed = "dummy2pubmed" #"gene2pubmed"
 
 #### Funtions for parsing commandline ###
@@ -51,6 +51,7 @@ def parseCommand():
 
     return options
 
+#### Functions for and writing loading files ####
 def cytoload(oldfile):
     """ Loading cytoscape files from already mined tax IDs """
     with open(oldfile) as infile:
@@ -67,6 +68,7 @@ def cytowrite(cytofile:str,instance_dict:dict):
         outfile.write("name1\tname2\tweight\n")
         for names,weight in instance_dict.items():
             outfile.write("\t".join(names) + "\t" + str(weight) + "\n")
+
 
 #### MAIN ####
 

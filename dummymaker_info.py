@@ -1,4 +1,4 @@
 with open("gene_info") as infile, open("smalldummy_info", "w") as outfile:
     for line in infile:
-        if "24" in line:
+        if line.startswith("24"):
             outfile.write(line)
