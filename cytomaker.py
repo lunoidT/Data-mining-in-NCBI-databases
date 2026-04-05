@@ -38,7 +38,7 @@ def parseCommand():
         # Saving filters
         elif options["weight_filtering"] == None and arg == "-w":
             try:
-                amount = int(arg.pop(1))
+                amount = int(sys.argv.pop(1))
             except ValueError:
                 usage("Filter amount must be an integer")
             options["weight_filtering"] = amount
@@ -46,7 +46,7 @@ def parseCommand():
 
         elif options["connection_filtering"] == None and arg == "-c":
             try:
-                amount = int(arg.pop(1))
+                amount = int(sys.argv.pop(1))
             except ValueError:
                 usage("Filter amount must be an integer")
             options["connection_filtering"] = amount
