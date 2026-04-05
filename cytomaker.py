@@ -6,9 +6,7 @@ from thegreatfilter import taxfilter
 from PubMed_sorter import ID_to_names, combinations
 from filtering import weightfilter, connectionfilter
 
-# things to consider:
-# - multifiltering
-
+# Files
 filename_info = "smalldummy_info" #"gene_info"
 file_gene2pubmed = "dummy2pubmed" #"gene2pubmed"
 
@@ -19,29 +17,41 @@ def usage(msg=None):
         print(msg, "\n")
 
     print ("Usage: cytomaker.py <tax_id> [filter]")
-    print("Filtering options:\n...")
+    print("Filtering options:")
+    print("-w <int> Filtering based on weight of connection between genes")
+    print("-c <int> Filtering based on amount of connections to gene")
 
     sys.exit(1)
 
 def parseCommand():
     """ parsing commandline options, returns dictionary with options """
-    options = {"tax_id":None, "filtering_type":None, "filtering_amount":None}
+    options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None}
 
+    filtering = 0
     while len(sys.argv) > 1:
         arg = sys.argv.pop(1)
         
-        # first option must be tax id
+        # First option must be tax ID
         if options["tax_id"] == None:
             options["tax_id"] = arg
-        # saving filter
-        elif options["filtering_type"] == None and (arg == "-w" or arg == "-c"):
-            options["filtering_type"] = arg
+
+        # Saving filters
+        elif options["weight_filtering"] == None and arg == "-w":
             try:
                 amount = int(arg.pop(1))
             except ValueError:
-                usage("Amount must be integer")
+                usage("Filter amount must be an integer")
+            options["weight_filtering"] = amount
+            filtering += 1
 
-            options["filtering_amount"] = amount
+        elif options["connection_filtering"] == None and arg == "-c":
+            try:
+                amount = int(arg.pop(1))
+            except ValueError:
+                usage("Filter amount must be an integer")
+            options["connection_filtering"] = amount
+            filtering += 1
+
         else:
             usage()
 
@@ -49,7 +59,7 @@ def parseCommand():
     if options["tax_id"] is None:
        usage("Please provide a tax ID.")
 
-    return options
+    return options, filtering
 
 #### Functions for and writing loading files ####
 def cytoload(oldfile):
@@ -63,7 +73,7 @@ def cytoload(oldfile):
 
 def cytowrite(cytofile:str,instance_dict:dict):
     """ Writes dictionary to file """
-    # making it readable for cytoscape
+    # Making it readable for cytoscape
     with open(cytofile, "w") as outfile:
         outfile.write("name1\tname2\tweight\n")
         for names,weight in instance_dict.items():
@@ -72,12 +82,12 @@ def cytowrite(cytofile:str,instance_dict:dict):
 
 #### MAIN ####
 
-# obtain options from commandline
-file_options = parseCommand()
+# Obtain options from commandline
+file_options,filtering = parseCommand()
 
 try:
-    # find out if Taxid already had been mined, 
-    # if so load the cytoscape file to a dict and use that for filtering
+    # Find out if Taxid already had been mined, 
+    # If so load the cytoscape file to a dict and use that for filtering
     print("Loading files...")
     if "cytofile_" + file_options["tax_id"] + ".csv" in os.listdir():
         instance_dict = cytoload("cytofile_" + file_options["tax_id"] + ".csv")
@@ -85,23 +95,30 @@ try:
     else:
         # Process infomation from genbank files to a file
         taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
-        # load into dictionaries
+        # Load into dictionaries
         ID_dict = ID_to_names("processedfile_" + file_options["tax_id"] + ".csv")
         instance_dict = combinations(ID_dict)
 
         print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}")
-        # save unfiltered version for later use 
+        # Save unfiltered version for later use 
         cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
     
-    # write filtered file 
-    if file_options["filtering_type"] != None:
+    # Filter instance dict
+    if filtering > 0:
         print("Filtering started...")
-        if file_options["filtering_type"] == "-w":
-            filtered_dict = weightfilter(instance_dict,file_options["filtering_amount"])
-            print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv"}")
-            cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv",filtered_dict)
-        
-        # continue to make filtered versions...
+        for _ in range(filtering):
+            if file_options["weight_filtering"] != None:
+                instance_dict = weightfilter(instance_dict,file_options["weight_filtering"])
+            elif file_options["connection_filtering"] != None:
+                instance_dict = weightfilter(instance_dict,file_options["connection_filtering"])
+            else:
+                usage("File option not found or missing.")
+
+        # Write filtered file
+        print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv"}")
+        cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + str(datetime.now()) + ".csv",instance_dict)
+
+    print("Program finished.")
 
 except IOError as file_err:
     usage(file_err)
