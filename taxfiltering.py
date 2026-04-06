@@ -13,12 +13,12 @@ def taxfilter(filename_info,file_gene2pubmed,tax_id:str) -> dict:
     ID2names = {}
     with open(file_gene2pubmed) as infile:
         for line in infile:
-            if tax_id == line.split()[0]:
-                geneID, PubID = line.split()[1], line.split()[2]
-
+            line_list = line.split()
+            if tax_id == line_list[0]:
+                geneID, PubID = line_list[1], line_list[2]
                 if PubID not in ID2names:
-                    ID2names[PubID] = set(geneID_to_name[geneID])
-                else:
-                    ID2names[PubID].add(geneID_to_name[geneID])
+                    ID2names[PubID] = set()
+                
+                ID2names[PubID].add(geneID_to_name[geneID])
     
     return ID2names
