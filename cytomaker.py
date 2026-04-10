@@ -16,25 +16,26 @@ def usage(msg=None):
     if msg is not None:
         print(msg, "\n")
 
-    print("Usage: cytomaker.py <tax_id> [filter] [-q] <int>")
+    print("Usage: cytomaker.py <tax_id> [filter] [-q <int> [-s <int>]]")
     print("For more information enter: cytomaker.py help")
     sys.exit(1)
 
 def help():
     """ More information about options """
-    print("Usage: cytomaker.py <tax_id> [filter] [-q]")
+    print("Usage: cytomaker.py <tax_id> [filter] [-q <int> [-s <int>]]")
     print("Filtering options:")
     print("-w <int> Filtering based on weight of connection between genes")
     print("-c <int> Filtering based on amount of connections to gene")
     print()
-    print("-q <int>: Quickfilter option, for experienced users. Made for a quick and dirty solution.") 
+    print("-q <int> : Quick Filter option, for experienced users.\nUse if running on tax ID with large amount of data, and computer is unable to processs.") 
     print("Ignores Pubmed articles with too many entries, since that can be a bottleneck for runtime and memory.")
+    print("-s <int> : Random sampling option for Quick Filter, instead of ignoring articles with many entries, it randomly reduces them <int>%")
     print("Note: Quckfiltering is ignored if file for tax ID is already loaded")
     sys.exit(1)
 
 def parse_command():
     """ parsing commandline options, returns dictionary with options """
-    options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None, "quick_filter":None}
+    options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None, "quick_filter":None, "sampling":None}
 
     filtering = 0
     while len(sys.argv) > 1:
@@ -67,13 +68,23 @@ def parse_command():
             options["connection_filtering"] = amount
             filtering += 1
 
-        # Activating quickfiltering
+        # Activating Quick Filtering
         elif options["quick_filter"] == None and arg == "-q":
             try:
                 amount = int(sys.argv.pop(1))
             except ValueError:
                 usage("Filter amount must be an integer")
             options["quick_filter"] = amount
+
+        # Quick Filtering sampling option
+        elif options["quick_filter"] != None and options["sampling"] == None and arg == "-s":
+            try:
+                amount = int(sys.argv.pop(1))
+                if not (0 < amount < 100):
+                    raise ValueError
+            except ValueError:
+                usage("Sampling percent must be an integer between 0 and 100")
+            options["sampling"] = amount
 
         else:
             usage()
@@ -126,7 +137,7 @@ try:
         # If quickfilter is activated articles with less or equal to x amount is ignored, making combinations process faster
         if file_options["quick_filter"] != None:
             print("Quick filtering activated.")
-            instance_dict = combinations(ID2names,file_options["quick_filter"])
+            instance_dict = combinations(ID2names,file_options["quick_filter"],file_options["sampling"])
             print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
             cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict)
         else:
