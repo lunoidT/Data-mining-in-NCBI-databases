@@ -133,16 +133,17 @@ try:
         ID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
 
         # Load into dictionaries
-        print("Combining names...")
         # If quickfilter is activated articles with less or equal to x amount is ignored, making combinations process faster
         if file_options["quick_filter"] != None:
+            print("Combining names...")
             print("Quick filtering activated.")
             instance_dict = combinations(ID2names,file_options["quick_filter"],file_options["sampling"])
-            print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
+            print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
             cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict)
         else:
+            print("Combining names...")
             instance_dict = combinations(ID2names)
-            print(f"Loaded files successfully. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
+            print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
             # Save unfiltered version for later use 
             cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
     
