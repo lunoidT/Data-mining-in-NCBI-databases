@@ -1,11 +1,5 @@
 from random import randrange
-
-def progress_bar(current, max_len,bar_len=30):
-    """ Progress bar for combinations function """
-    progress_text = "█" * int((current/max_len)*bar_len)
-    rest_text = "-" * (bar_len - int((current/max_len)*bar_len))
-    print(f"\rProgress: [{progress_text}{rest_text}]",end="")
-
+from progress_bar import progress_bar
 
 def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
     """ From the ID2names dictionary, creates a dictionary with different gene combinations and their weight """
@@ -34,6 +28,7 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
             except:
                 # Errors might happen if too small max list length.
                 # Skipping since samling makes no difference
+                # PROBLEM???
                 sampling = None
 
         if max_size == -1 or len(names) < max_size:

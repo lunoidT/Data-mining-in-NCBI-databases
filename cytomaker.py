@@ -129,20 +129,21 @@ try:
         instance_dict = cytoload("cytofile_" + file_options["tax_id"] + ".csv")
         print("Loaded files successfully.")
     else:
-        # Process infomation from genbank files to a file
-        ID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
+        # Process infomation from genbank files to a dict
+        pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
+        print("Loaded files successfully to a dictionary.")
 
         # Load into dictionaries
         # If quickfilter is activated articles with less or equal to x amount is ignored, making combinations process faster
         if file_options["quick_filter"] != None:
             print("Combining names...")
             print("Quick filtering activated.")
-            instance_dict = combinations(ID2names,file_options["quick_filter"],file_options["sampling"])
+            instance_dict = combinations(pubID2names,file_options["quick_filter"],file_options["sampling"])
             print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
             cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict)
         else:
             print("Combining names...")
-            instance_dict = combinations(ID2names)
+            instance_dict = combinations(pubID2names)
             print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
             # Save unfiltered version for later use 
             cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
