@@ -8,7 +8,7 @@ from filtering import weightfilter, connectionfilter
 
 # Files
 filename_info = "smalldummy_info" #"gene_info"
-file_gene2pubmed = "dummy2pubmed" #"gene2pubmed"
+file_gene2pubmed = "gene2pubmed"
 
 #### Funtions for parsing commandline ###
 def usage(msg=None):
@@ -105,11 +105,14 @@ def cytoload(oldfile):
                 instance_dict[line.split()[0]] = line.split()[1]
     return instance_dict
 
-def cytowrite(cytofile:str,instance_dict:dict):
+def cytowrite(cytofile:str,instance_dict:dict,info_txt=None):
     """ Writes dictionary to file """
     # Making it readable for cytoscape
     with open(cytofile, "w") as outfile:
-        outfile.write("name1\tname2\tweight\n")
+        # Write info text if any
+        if info_txt != None:
+            outfile.write(info_txt + "\n")
+        outfile.write("#name1\tname2\tweight\n")
         for names,weight in instance_dict.items():
             outfile.write("\t".join(names) + "\t" + str(weight) + "\n")
 
@@ -133,20 +136,23 @@ try:
         pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
         print("Loaded files successfully to a dictionary.")
 
-        # Load into dictionaries
+        # Process information further
         # If quickfilter is activated articles with less or equal to x amount is ignored, making combinations process faster
         if file_options["quick_filter"] != None:
             print("Combining names...")
             print("Quick filtering activated.")
             instance_dict = combinations(pubID2names,file_options["quick_filter"],file_options["sampling"])
             print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
-            cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict)
+            # writing file
+            file_txt = f"#Tax ID: {file_options["tax_id"]}. Quick filtered with boundary {file_options["quick_filter"]}. Sampling: {file_options["sampling"]}"
+            cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict,info_txt=file_txt)
         else:
             print("Combining names...")
             instance_dict = combinations(pubID2names)
-            print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
             # Save unfiltered version for later use 
-            cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict)
+            print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
+            file_txt = f"#Tax ID: {file_options["tax_id"]}. Unfiltered cytofile."
+            cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict,info_txt=file_txt)
     
     # Filter instance dict
     if filtering > 0:
@@ -161,7 +167,8 @@ try:
 
         # Write filtered file
         print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv"}...")
-        cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv",instance_dict)
+        file_txt = f"#Tax ID: {file_options["tax_id"]}. Weight filer: {file_options["weight_filtering"]}. Commection filter: {file_options["connection_filtering"]}"
+        cytowrite("cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv",instance_dict,info_txt=file_txt)
 
     print("Program finished.")
 
