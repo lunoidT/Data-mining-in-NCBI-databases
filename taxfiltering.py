@@ -13,7 +13,7 @@ def taxfilter(filename_info,file_gene2pubmed,tax_id:str) -> dict:
         # geneID_to_name: {GeneID : gene_name }
         geneID_to_name = {}
         for line in infile:
-            line_list = line.split("/t")
+            line_list = line.split("\t")
             if tax_id == line_list[0]:
                 geneID_to_name[line_list[1]] = line_list[8]
 
@@ -37,5 +37,7 @@ def taxfilter(filename_info,file_gene2pubmed,tax_id:str) -> dict:
             # Updating progress bar
             progress += len(line)
             progress_bar(progress,max_len)
+
+    print()
     
     return pubID2names
