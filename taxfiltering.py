@@ -5,8 +5,9 @@ def taxfilter(filename_info,file_gene2pubmed,tax_id:str) -> dict:
         # geneID_to_name: {GeneID : gene_name }
         geneID_to_name = {}
         for line in infile:
-            if tax_id == line.split()[0]:
-                geneID_to_name[line.split()[1]] = line.split("\t")[8]
+            line_list = line.split("/t")
+            if tax_id == line_list[0]:
+                geneID_to_name[line_list[1]] = line_list[8]
 
     # Create dict containing Pubmed connections
     # ID2namelist = {PubmedID : {set of gene names that has this ID}}
