@@ -8,7 +8,7 @@ from filtering import weightfilter, connectionfilter
 
 # Files
 filename_info = "smalldummy_info" #"gene_info"
-file_gene2pubmed = "gene2pubmed"
+file_gene2pubmed = "dummy2pubmed"
 
 #### Funtions for parsing commandline ###
 def usage(msg=None):
@@ -102,8 +102,9 @@ def cytoload(oldfile):
         instance_dict = {}
         for line in infile:
             if not line.startswith("#"):
-                instance_dict[line.split()[0]] = line.split()[1]
-    return instance_dict
+                parts = line.strip().split("\t") 
+                instance_dict[(parts[0], parts[1])] = parts[2]
+    return instance_dict    
 
 def cytowrite(cytofile:str,instance_dict:dict,info_txt=None):
     """ Writes dictionary to file """
@@ -112,16 +113,21 @@ def cytowrite(cytofile:str,instance_dict:dict,info_txt=None):
         # Write info text if any
         if info_txt != None:
             outfile.write(info_txt + "\n")
-        outfile.write("#name1\tname2\tweight\n")
-        for names,weight in instance_dict.items():
-            outfile.write("\t".join(names) + "\t" + str(weight) + "\n")
+        if file_options["connection_filtering"] != None:
+            outfile.write("#name1\tconnected entries\tamount of entries\n")
+            for name, connected_names in instance_dict.items():
+                outfile.write(name + "\t" + "\t".join(connected_names) + "\t" + str(len(connected_names)) + "\n")
+        else:
+            outfile.write("#name1\tname2\tweight\n")
+            for names, weight in instance_dict.items():
+                outfile.write("\t".join(names) + "\t" + str(weight) + "\n")
 
 
 #### MAIN ####
 
 # Obtain options from commandline
 file_options,filtering = parse_command()
-# Obtain date, and add underscore so it can be used in file name
+# Obtain date, and add underscore so it can be used in filename
 date = "_".join( str(datetime.now()).split() )
 
 try:
@@ -153,7 +159,7 @@ try:
             print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
             file_txt = f"#Tax ID: {file_options["tax_id"]}. Unfiltered cytofile."
             cytowrite("cytofile_" + file_options["tax_id"] + ".csv",instance_dict,info_txt=file_txt)
-    
+
     # Filter instance dict
     if filtering > 0:
         print("Filtering started...")
