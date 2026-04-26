@@ -150,7 +150,7 @@ try:
             instance_dict = combinations(pubID2names,file_options["quick_filter"],file_options["sampling"])
             print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
             # writing file
-            file_txt = f"#Tax ID: {file_options["tax_id"]}. Quick filtered with boundary {file_options["quick_filter"]}. Sampling: {file_options["sampling"]}"
+            file_txt = f"#Tax ID: {file_options["tax_id"]}. Quick filtered with max length {file_options["quick_filter"]}. Sampling: {file_options["sampling"]}"
             cytowrite("cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict,info_txt=file_txt)
         else:
             print("Combining names...")
@@ -163,13 +163,10 @@ try:
     # Filter instance dict
     if filtering > 0:
         print("Filtering started...")
-        for _ in range(filtering):
-            if file_options["weight_filtering"] != None:
-                instance_dict = weightfilter(instance_dict,file_options["weight_filtering"])
-            elif file_options["connection_filtering"] != None:
-                instance_dict = connectionfilter(instance_dict,file_options["connection_filtering"])
-            else:
-                usage("File option not found or missing.")
+        if file_options["weight_filtering"] != None:
+            instance_dict = weightfilter(instance_dict,file_options["weight_filtering"])
+        if file_options["connection_filtering"] != None:
+            instance_dict = connectionfilter(instance_dict,file_options["connection_filtering"])
 
         # Write filtered file
         print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv"}...")
