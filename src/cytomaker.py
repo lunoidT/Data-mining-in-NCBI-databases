@@ -121,7 +121,6 @@ def cytowrite(cytofile:str,instance_dict:dict,info_txt=None):
         for names, weight in instance_dict.items():
             outfile.write("\t".join(names) + "\t" + str(weight) + "\n")
 
-
 #### MAIN ####
 
 # Obtain options from commandline
@@ -165,7 +164,7 @@ try:
     if filtering > 0:
         print("Filtering started...")
         if file_options["connection_filtering"] != None:
-            # If file for tax ID is already loaded instiance dict must be made
+            # If file for tax ID is already loaded instance dict must be made
             if pubID2names == None:
                 pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
             print("Creating connections...")
@@ -178,8 +177,6 @@ try:
             instance_dict, name_op = namefilter(instance_dict,file_options["name_filtering"])
             print(instance_dict)
             file_options["name_filtering"] = name_op + " " + file_options["name_filtering"]
-
-
 
         # Write filtered file
         print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv"}...")

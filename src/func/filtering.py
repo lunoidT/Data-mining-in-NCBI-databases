@@ -38,14 +38,8 @@ def connectionfilter(pubidnames:dict, min_connections:int, op:str):
     for connected_instance in pubidnames:
         if eval(f"{len(pubidnames[connected_instance])} {op} {min_connections}"):
             connection_dict[connected_instance] = pubidnames[connected_instance]
+
     return combinations(connection_dict), op
-
-    """for connected_instance in pubidnames:
-        if len(pubidnames[connected_instance]) >= min_connections:
-            connection_dict[connected_instance] = pubidnames[connected_instance]
-    print(connected_instance)
-
-    return combinations(connection_dict)"""
 
 def namefilter(instancedict:dict, genename:int):
     """ Selects all connections of entries with a specific mentioned gene-name"""
@@ -53,7 +47,7 @@ def namefilter(instancedict:dict, genename:int):
     # find and return comperative operator for weightfiltering
     op = input("You've selected namefilter. Please choose one of the following arguments: including, excluding\n"
         "E.g. all entries including/excluding this genename\n")
-    
+
     if op not in ("including","excluding"):
             raise ValueError("The filter isn't filtering due to an insufficient amount of arguments")
 
@@ -67,8 +61,10 @@ def namefilter(instancedict:dict, genename:int):
             for instance in instancedict:
                 if genename not in instance:
                     namefitereddict[instance] = instancedict[instance]
-    
-    if not namefitereddict:
-        raise ValueError(f"{genename} does not exist in this file")
+            
+        if instancedict and not namefitereddict:
+            raise ValueError(f"{genename} does not exist in this file after filtering")    
     
     return namefitereddict, op
+
+# future fourth filter (no ideas yet)
