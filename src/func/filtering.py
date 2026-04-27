@@ -33,31 +33,14 @@ def weightfilter(instance_dict:dict, weight:int, op:str):
     return filtered_dict
 
 # @filterwrapper
-def connectionfilter(instance_dict:dict, min_connections:int):
+def connectionfilter(pubidnames:dict, min_connections:int):
     """ Selects entries with a minimum amount of connections"""
+    from namecombiner import combinations
 
     connection_dict = dict()
+    for connected_instance in pubidnames:
+        if len(pubidnames[connected_instance]) >= min_connections:
+            connection_dict[connected_instance] = pubidnames[connected_instance]
+    print(connected_instance)
 
-    # for line in file:
-        # for connection in line
-            # connections += 1
-        # if connections >= min_connections:
-            # instance_dict.add(instance)
-    # return instance_dict
-
-    for instance in instance_dict:
-        # this needs error handling for good measure (debugging)
-
-        for i in range(len(instance)):
-            if instance[i] not in connection_dict:
-                connection_dict[instance[i]] = set()
-            for j in range(len(instance)):
-                if instance[i] != instance[j]:
-                    connection_dict[instance[i]].add(instance[j])
-
-
-    for connected_instance in list(connection_dict.keys()):
-        if len(connection_dict[connected_instance]) < min_connections:
-            del connection_dict[connected_instance]
-
-    return connection_dict
+    return combinations(connection_dict)
