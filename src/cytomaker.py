@@ -134,7 +134,7 @@ try:
     # Find out if Taxid already had been mined, 
     # If so load the cytoscape file to a dict and use that for filtering
     print("Loading files...")
-    if "cytofile_" + file_options["tax_id"] + ".csv" in os.listdir("cytofiles"): # DEN VIRKER IKKE 
+    if "cytofile_" + file_options["tax_id"] + ".csv" in os.listdir("cytofiles"): 
         instance_dict = cytoload("cytofiles/cytofile_" + file_options["tax_id"] + ".csv")
         print("Loaded files successfully from existing file into a dictionary.")
     else:
@@ -169,11 +169,16 @@ try:
             if pubID2names == None:
                 pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
             print("Creating connections...")
-            instance_dict = connectionfilter(pubID2names,file_options["connection_filtering"])
+            instance_dict, connction_op = connectionfilter(pubID2names,file_options["connection_filtering"])
+            file_options["connection_filtering"] = connction_op + " " + str(file_options["connection_filtering"])
         if file_options["weight_filtering"] != None:
-            instance_dict = weightfilter(instance_dict,file_options["weight_filtering"])
+            instance_dict, weight_op = weightfilter(instance_dict, file_options["weight_filtering"])
+            file_options["weight_filtering"] = weight_op + " " + str(file_options["weight_filtering"]) 
         if file_options["name_filtering"] != None:
-            instance_dict = namefilter(instance_dict,file_options["name_filtering"])
+            instance_dict, name_op = namefilter(instance_dict,file_options["name_filtering"])
+            print(instance_dict)
+            file_options["name_filtering"] = name_op + " " + file_options["name_filtering"]
+
 
 
         # Write filtered file
