@@ -1,5 +1,5 @@
 from random import sample
-from progress_bar import progress_bar
+from func.progress_bar import progress_bar
 
 def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
     """ From the ID2names dictionary, creates a dictionary with different gene combinations and their weight """
@@ -8,7 +8,7 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
 
     # Variables for progress bar
     progress = 0
-    max_len = len(ID2names)
+    prog_len = len(ID2names)
 
     if max_size < 2 and max_size != -1:
         raise ValueError("Max size too small.") # maybe replace with usage
@@ -18,15 +18,11 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
         names = list(names)
 
         # Sampling option for Quick Filtering
-        if sampling != None:
-            if len(names) > max_size:
-                # New list length 
-                new_len = int(len(names)*sampling/100)
-                if new_len < 1:
-                    new_len = 1
-                names = sample(names,new_len)
+        if sampling != None and len(names) > max_size:
+            # New list length 
+            names = sample(names,max_size)
 
-        if max_size == -1 or len(names) < max_size:
+        if max_size == -1 or len(names) <= max_size:
             # make all combinations
             for i in range(len(names)-1):
                 for j in range(i+1,len(names)):
@@ -41,7 +37,7 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
 
         # Updating progress
         progress +=1
-        progress_bar(progress,max_len)
+        progress_bar(progress,prog_len)
     # go to newline after progress bar
     print()
     return instance_dict

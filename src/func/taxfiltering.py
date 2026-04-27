@@ -1,5 +1,5 @@
 import os
-from progress_bar import progress_bar
+from func.progress_bar import progress_bar
 
 def taxfilter(filename_info,file_gene2pubmed,tax_id:str) -> dict:
     """ Creates dict containing Pubmed ID and gene names for given taxid """
