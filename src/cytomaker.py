@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 from func.taxfiltering import taxfilter 
 from func.namecombiner import combinations 
-from func.filtering import weightfilter, connectionfilter, namefilter
+from func.filtering import weightfilter, connectionfilter, namefilter, sumofconnectionfilter
 
 # Files
 filename_info = "smalldummy_info" #"gene_info"
@@ -28,6 +28,7 @@ def help():
     print("-w <int> Filtering based on weight of connection between genes")
     print("-c <int> Filtering based on amount of connections to gene")
     print("-n <str> Filtering based on if a specific gene-name appears in connection")
+    print("-Ç <int> Filtering based on weighed sum of connection")
     print()
     print("-q <int> : Quick Filter option.\nUse if running on tax ID with large amount of data, and computer is unable to processs.") 
     print("Ignores Pubmed articles with too many entries, since that can be a bottleneck for runtime and memory.")
@@ -37,7 +38,7 @@ def help():
 
 def parse_command():
     """ parsing commandline options, returns dictionary with options """
-    options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None, "name_filtering":None, "quick_filter":None, "sampling":None}
+    options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None, "name_filtering":None, "connectionsummed_filtering":None, "quick_filter":None, "sampling":None}
 
     filtering = 0
     while len(sys.argv) > 1:
@@ -76,6 +77,14 @@ def parse_command():
             options["name_filtering"] = name
             filtering += 1
             break
+
+        elif options["connectionsummed_filtering"] == None and arg == '-Ç':
+            try:
+                amount = int(sys.argv.pop(1))
+            except ValueError:
+                usage("Filter amount must be an integer")
+            options["connectionsummed_filtering"] = amount
+            filtering += 1            
 
         # Activating Quick Filtering
         elif options["quick_filter"] == None and arg == "-q":
@@ -175,12 +184,13 @@ try:
             file_options["weight_filtering"] = weight_op + " " + str(file_options["weight_filtering"]) 
         if file_options["name_filtering"] != None:
             instance_dict, name_op = namefilter(instance_dict,file_options["name_filtering"])
-            print(instance_dict)
             file_options["name_filtering"] = name_op + " " + file_options["name_filtering"]
+        if file_options["connectionsummed_filtering"] != None:
+            instance_dict, con_sum_op = sumofconnectionfilter(instance_dict,file_options["connectionsummed_filtering"])
 
         # Write filtered file
         print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv"}...")
-        file_txt = f"#Tax ID: {file_options["tax_id"]}. Weight filter: {file_options["weight_filtering"]}. Commection filter: {file_options["connection_filtering"]}. Name filter: {file_options["name_filtering"]}."
+        file_txt = f"#Tax ID: {file_options["tax_id"]}. Weight filter: {file_options["weight_filtering"]}. Commection filter: {file_options["connection_filtering"]}. Name filter: {file_options["name_filtering"]}. Sum of connections filter: {file_options['connectionsummed_filtering']}."
         cytowrite(file_path + "cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv",instance_dict,info_txt=file_txt)
 
     print("Program finished.")
