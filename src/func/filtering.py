@@ -62,8 +62,8 @@ def namefilter(instancedict:dict, genename:int):
                 if genename not in instance:
                     namefitereddict[instance] = instancedict[instance]
             
-        if instancedict and not namefitereddict:
-            raise ValueError(f"{genename} does not exist in this file after filtering")    
+    if instancedict and not namefitereddict:
+        print(f"Warning! The file is now empty due to your filtering preferences. It wasn't before!")    
     
     return namefitereddict, op
 
