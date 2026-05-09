@@ -1,4 +1,7 @@
-# for runtime analysis, n will indicate genenames and m pubmedID's
+# for runtime analysis:
+# n will indicate genenames 
+# m will indicate pubmedID's
+# k will indicate amount of genenames within each value in the ID2names dictionary in namecombiner.py
 
 def filterwrapper(func):
     def compops(instance_dict:dict, weight:int):
