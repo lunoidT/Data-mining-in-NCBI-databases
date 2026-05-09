@@ -1,4 +1,8 @@
-#for runtime analysis, m indicates pubmedID's
+# for runtime analysis:
+# n will indicate genenames 
+# m will indicate pubmedID's
+# k will indicate amount of genenames within each value in the ID2names dictionary
+
 from random import sample
 from func.progress_bar import progress_bar
 
@@ -29,7 +33,7 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
         # This is always true for worst runtime scenario
         if max_size == -1 or len(names) <= max_size:
             # make all combinations
-            # O(m*k) due to nested loop - likely of differing size to previous
+            # O(m*k) due to nested loop. This loop can be much larger than previous so a new variable is declared
             for i in range(len(names)-1):
                 # O(m*k^2) due to another nested loop (of equal size to previous)
                 for j in range(i+1,len(names)):
