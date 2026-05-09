@@ -1,15 +1,15 @@
 import os
 from func.progress_bar import progress_bar
 
-def taxfilter(filename_info,file_gene2pubmed,tax_id:str) -> dict:
+def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
     """ Creates dict containing Pubmed ID and gene names for given taxid """
 
     # Variables for progress bar
     progress = 0
-    max_len = os.path.getsize(filename_info) + os.path.getsize(file_gene2pubmed)
+    max_len = os.path.getsize(file_info) + os.path.getsize(file_gene2pubmed)
 
     # Create translation dict for finding relevant gene names
-    with open(filename_info) as infile:
+    with open(file_info) as infile:
         # geneID_to_name: {GeneID : gene_name }
         geneID_to_name = {}
         for line in infile:
@@ -26,12 +26,12 @@ def taxfilter(filename_info,file_gene2pubmed,tax_id:str) -> dict:
     pubID2names = {}
     with open(file_gene2pubmed) as infile:
         for line in infile:
-            line_list = line.split()
-            if tax_id == line_list[0]:
+            if line.startswith(tax_id):
+                line_list = line.split()
                 geneID, PubID = line_list[1], line_list[2]
+
                 if PubID not in pubID2names:
                     pubID2names[PubID] = set()
-                
                 pubID2names[PubID].add(geneID_to_name[geneID])
         
             # Updating progress bar
