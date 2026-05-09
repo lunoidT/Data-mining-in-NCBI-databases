@@ -35,6 +35,8 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
 
         # names here depends not on values but the amount of names in each value.
         names = list(names)
+        # --Uncomment sort if using pytest--
+        #names.sort()
 
         # Sampling option for Quick Filtering
         if sampling != None and len(names) > max_size:
