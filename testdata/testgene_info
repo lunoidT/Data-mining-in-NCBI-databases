@@ -1,0 +1,7 @@
+#tax_id GeneID  Symbol  LocusTag        Synonyms        dbXrefs chromosome      map_location    description       type_of_gene    Symbol_from_nomenclature_authority      Full_name_from_nomenclature_authority   Nomenclature_status       Other_designations      Modification_date       Feature_type
+673	58894363	AL542_RS00585	AL542_RS00585	AL542_00565	-	2	-	AraC family transcriptional regulator	protein-coding	-	-	-	AraC family transcriptional regulator	20260307	-
+673	58894365	AL542_RS00595	AL542_RS00595	AL542_00575	-	2	-	aldehyde dehydrogenase family protein	protein-coding	-	-	-	aldehyde dehydrogenase family protein	20260307	-
+673	58894367	AL542_RS00605	AL542_RS00605	AL542_00585	-	2	-	magnesium transporter	protein-coding	-	-	-	magnesium transporter	20260307	-
+673	58894369	AL542_RS00615	AL542_RS00615	AL542_00595	-	2	-	methyl-accepting chemotaxis protein	protein-coding	-	-	-	methyl-accepting chemotaxis protein	20260307	-
+673	58894370	AL542_RS00620	AL542_RS00620	AL542_00600	-	2	-	DEAD/DEAH box helicase	protein-coding	-	-	-	DEAD/DEAH box helicase	20260307	-
+673	58894371	AL542_RS00625	AL542_RS00625	AL542_00605	-	2	-	glutamate-cysteine ligase family protein	protein-coding	-	-	-	glutamate-cysteine ligase family protein	20260307	-
