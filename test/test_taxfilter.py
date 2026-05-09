@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# for running pytest, run in test directory
+# When running pytest, run in test directory
 import pytest
 
 from taxfiltering import taxfilter

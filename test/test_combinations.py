@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-# for running pytest, run in test directory
+# When running pytest, run in test directory
 import pytest
 
 from namecombiner import combinations
 filepath = "../testdata/"
 # output used in many tests
+
 expected_output = {("AraC family transcriptional regulator","magnesium transporter"):1,
                     ("AraC family transcriptional regulator","methyl-accepting chemotaxis protein"):1,
                     ("AraC family transcriptional regulator","glutamate-cysteine ligase family protein"):1,
@@ -69,3 +70,10 @@ def test_combinations_quickfilter_w_samp():
                      "18165013":set(["AraC family transcriptional regulator","magnesium transporter","methyl-accepting chemotaxis protein","glutamate-cysteine ligase family protein"])}
     output = {('magnesium transporter', 'methyl-accepting chemotaxis protein'):1}
     assert combinations(PubmedID2names,2,True) == output
+
+@pytest.mark.parametrize("max_size", [0,1])
+def test_combinations_quickfilter_lownum(max_size):
+    PubmedID2names = {"19478949":set(["AraC family transcriptional regulator"]), 
+                     "18165013":set(["AraC family transcriptional regulator","magnesium transporter","methyl-accepting chemotaxis protein","glutamate-cysteine ligase family protein"])}
+    with pytest.raises(ValueError):
+        combinations(PubmedID2names,max_size)
