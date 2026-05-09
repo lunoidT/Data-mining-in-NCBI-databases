@@ -37,8 +37,12 @@ def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
 
                 if PubID not in pubID2names:
                     pubID2names[PubID] = set()
-                pubID2names[PubID].add(geneID_to_name[geneID])
-        
+                try:
+                    pubID2names[PubID].add(geneID_to_name[geneID])
+                except KeyError as key_err:
+                    # raising again for unittesting
+                    raise KeyError(f"Gene ID could not be translated to gene name\nReason: {key_err}")
+                    
             # Updating progress bar
             progress += len(line)
             progress_bar(progress,max_len)

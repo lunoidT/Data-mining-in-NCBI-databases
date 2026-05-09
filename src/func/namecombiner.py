@@ -2,21 +2,32 @@
 from random import sample
 from func.progress_bar import progress_bar
 
-def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
+def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
     """ From the ID2names dictionary, creates a dictionary with different gene combinations and their weight """
-    # combining different Pubmed IDs and counting their weight
-    instance_dict = {} # {combination, weight}
+    # Not accepting empty input
+    if len(pubID2names) == 0:
+        raise ValueError("Input dictionary is empty, no combinations can be created.\npubID2names must consist of at least one pubmed ID key with a non-empty value.")
 
     # Variables for progress bar
     progress = 0
-    prog_len = len(ID2names)
+    prog_len = len(pubID2names)
 
     if max_size < 2 and max_size != -1:
         raise ValueError("Max size too small.") # maybe replace with usage
 
-    # Combine names and increment
+    # Combining different Pubmed IDs and counting their weight
+    instance_dict = {} # {combination, weight}
     # O(m) 
-    for names in ID2names.values():
+    for names in pubID2names.values():
+        # Error handling and input control
+        if isinstance(names,list):
+            # If values are given as lists, they are typecast to sets to avoid repeats
+            names = set(names)
+        if not isinstance(names,set):
+            raise ValueError(f"Values must be either set or lists.\nValue: {names}")
+        if len(names) == 0:
+            print("Warning: No names associated with PubMed ID. Dictonary is malformed.")
+            print("Continuing program...")
 
         # names here depends not on values but the amount of names in each value.
         names = list(names)
@@ -34,7 +45,7 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
                 # O(m*k^2) due to another nested loop (of equal size to previous)
                 for j in range(i+1,len(names)):
 
-                    # add to dict / increment
+                    # Add to dict / increment
                     m = tuple(sorted([names[i],names[j]]))
                     if m not in instance_dict:
                         instance_dict[m] = 1
@@ -44,7 +55,7 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
         # Updating progress
         progress +=1
         progress_bar(progress,prog_len)
-    # go to newline after progress bar
+    # Go to newline after progress bar
     print()
 
     # In worst case scenario, O(m*k^2) is the outcome. 
