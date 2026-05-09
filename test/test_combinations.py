@@ -55,3 +55,17 @@ def test_combinations_intkey():
 
 
 ### Testing with quickfilter ###
+
+def test_combinations_quickfilter_no_samp():
+    PubmedID2names = {"19478949":set(["AraC family transcriptional regulator"]), 
+                     "18165013":set(["AraC family transcriptional regulator","magnesium transporter","methyl-accepting chemotaxis protein","glutamate-cysteine ligase family protein"])}
+    assert combinations(PubmedID2names,2) == {}
+
+def test_combinations_quickfilter_w_samp():
+    # Note: to use this, names list must be sorted in namecombiner.py
+    import random
+    random.seed(1000)
+    PubmedID2names = {"19478949":set(["AraC family transcriptional regulator"]), 
+                     "18165013":set(["AraC family transcriptional regulator","magnesium transporter","methyl-accepting chemotaxis protein","glutamate-cysteine ligase family protein"])}
+    output = {('magnesium transporter', 'methyl-accepting chemotaxis protein'):1}
+    assert combinations(PubmedID2names,2,True) == output
