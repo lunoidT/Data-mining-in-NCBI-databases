@@ -3,7 +3,7 @@
 # for runtime analysis:
 # n will indicate genenames 
 # m will indicate pubmedID's
-# k will indicate amount of genenames within each value in the ID2names dictionary in namecombiner.py
+# k will indicate amount of gene-names within each value in the ID2names dictionary in namecombiner.py
 
 import sys
 import os
@@ -31,7 +31,7 @@ def help():
     """ More information about options """
     print("Usage: cytomaker.py <tax_id> [filter] [-q <int> [-s]]")
     print("Filtering options:")
-    print("-w <int> Filtering based on weight of connection between genes")
+    print("-w <int> Filtering based on weight of connections between genes")
     print("-c <int> Filtering based on amount of connections to gene")
     print("-n <str> Filtering based on if a specific gene-name appears in connection")
     print("-u <int> Filtering based on weighed sum of connection")

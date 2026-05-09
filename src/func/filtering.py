@@ -6,7 +6,7 @@
 def filterwrapper(func):
     def compops(instance_dict:dict, weight:int):
         op = input(f"You've chosen the {str(func).split(' ')[1]}. Please choose one of the following arguments for the filter: less, great, eq, neq\n"
-                   "Eg. all values lesser/great than selected weight x or equal/not equal to amount of connections, etc.x\n")
+                   "Eg. all values lesser/greater than selected weight x or equal/not equal to amount of connections, etc.x\n")
         
         # O(1) due to set
         if op not in ("less", "great", "eq", "neq"): 
