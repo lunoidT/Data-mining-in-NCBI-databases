@@ -1,3 +1,4 @@
+#for runtime analysis, m indicates pubmedID's
 from random import sample
 from func.progress_bar import progress_bar
 
@@ -14,7 +15,10 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
         raise ValueError("Max size too small.") # maybe replace with usage
 
     # Combine names and increment
+    # O(m) 
     for names in ID2names.values():
+
+        # names here depends not on values but the amount of names in each value.
         names = list(names)
 
         # Sampling option for Quick Filtering
@@ -22,9 +26,12 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
             # New list length 
             names = sample(names,max_size)
 
+        # This is always true for worst runtime scenario
         if max_size == -1 or len(names) <= max_size:
             # make all combinations
+            # O(m*k) due to nested loop - likely of differing size to previous
             for i in range(len(names)-1):
+                # O(m*k^2) due to another nested loop (of equal size to previous)
                 for j in range(i+1,len(names)):
 
                     # add to dict / increment
@@ -33,11 +40,13 @@ def combinations(ID2names:dict,max_size=-1,sampling=None) -> dict:
                         instance_dict[m] = 1
                     else:
                         instance_dict[m] += 1
-        
 
         # Updating progress
         progress +=1
         progress_bar(progress,prog_len)
     # go to newline after progress bar
     print()
+
+    # In worst case scenario, O(m*k^2) is the outcome. 
+    # If k is much larger than m, m can be neglected but this likely won't be the case
     return instance_dict

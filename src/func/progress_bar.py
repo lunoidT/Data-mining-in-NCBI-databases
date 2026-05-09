@@ -1,3 +1,4 @@
+# This won't have any significant impact on runtime
 def progress_bar(current, max_len,bar_len=30):
     """ Progress bar for combinations function """
     bar_prog = int((current/max_len)*bar_len)
