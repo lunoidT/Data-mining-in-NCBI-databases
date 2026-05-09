@@ -214,6 +214,8 @@ if __name__ == "__main__":
                     # O(n+m)
                     pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
                 print("Creating connections...")
+
+                #notice that this filter is the only to use pubID2names instead of instance_dict
                 # O(m*k^2)
                 instance_dict, connction_op = connectionfilter(pubID2names,file_options["connection_filtering"])
                 file_options["connection_filtering"] = connction_op + " " + str(file_options["connection_filtering"])
