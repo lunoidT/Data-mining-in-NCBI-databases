@@ -55,10 +55,10 @@ def weightfilter(instance_dict:dict, weight:int, op:str, prog_len:list[int,int])
     # compare each weight to target (if "op == less"" this means: len(pubidnames[connected_instance])} < {min_connections})
     # O(n)
     for key in instance_dict: 
-        progress += 1
+        prog_len[0] += 1
         if eval(f"{instance_dict[key]} {op} {weight}"):
             filtered_dict[key] = instance_dict[key]
-        progress_bar(progress,prog_len)
+        progress_bar(prog_len[0],prog_len[1])
 
     # Overall runtime O(n+1). Simplified O(n)
     return filtered_dict, op
@@ -75,10 +75,10 @@ def connectionfilter(pubidnames:dict, min_connections:int, op:str, prog_len:list
 
     # O(m) (m due to us looping over pubIDs instead of names from the instance_dict)
     for connected_instance in pubidnames:
-        progress += 1
+        prog_len[0] += 1
         if eval(f"{len(pubidnames[connected_instance])} {op} {min_connections}"):
             connection_dict[connected_instance] = pubidnames[connected_instance]
-        progress_bar(progress,prog_len)
+            progress_bar(prog_len[0],prog_len[1])
         
 
     # creates a dictionary for all combinations with the remaining entires after filtering 
@@ -105,22 +105,21 @@ def namefilter(instancedict:dict, genename:int, prog_len:list[int,int]):
             raise ValueError("The filter isn't filtering due to  wrongful arguments")
 
     namefitereddict = dict()
-    progress = 0; prog_len = len(instancedict)
     if op == "including":
         # O(n)
         for instance in instancedict:
-            progress += 1
+            prog_len[0] += 1
             if genename in instance:
                 namefitereddict[instance] = instancedict[instance]
-                progress_bar(progress,prog_len)
+            progress_bar(prog_len[0],prog_len[1])
 
     elif op == "excluding":
         # O(n)
         for instance in instancedict:
-            progress += 1
+            prog_len[0] += 1
             if genename not in instance:
                 namefitereddict[instance] = instancedict[instance]
-            progress_bar(progress,prog_len)
+            progress_bar(prog_len[0],prog_len[1])
 
     # This "error" message helps the user realize that a gene perhaps is more/less prevalent than foreseen and lost to filtering
     if instancedict and not namefitereddict:
@@ -140,7 +139,7 @@ def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str,prog_len:list
     # O(n) 
     print("Be aware that this filter requires a substantial amount of times")
     for connected_instance in instancedict:
-        progress += .5
+        prog_len[0] += .5
         if (connected_instance[0] in connectiondict):
             connectiondict[connected_instance[0]] += int(instancedict[connected_instance])
         else:
@@ -149,19 +148,19 @@ def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str,prog_len:list
             connectiondict[connected_instance[1]] += int(instancedict[connected_instance])
         else:
             connectiondict[connected_instance[1]] = int(instancedict[connected_instance])
-        progress_bar(progress,prog_len)
+        progress_bar(prog_len[0],prog_len[1])
 
 
     # all connections to genes with unacceptable targetsum are removed 
     # O(n)
     print("Stay strong kings and queens! The filtering is still ongoing!")
     for key in list(instancedict.keys()):
-        progress += .5
+        prog_len[0] += .5
         if not eval(f"{connectiondict[key[0]]} {op} {targetsum}"):
             del instancedict[key]
         elif not eval(f"{connectiondict[key[1]]} {op} {targetsum}"):
             del instancedict[key]
-        progress_bar(progress,prog_len)
+        progress_bar(prog_len[0],prog_len[1])
 
     # Overall runtime O(2n + 1). After simplifying: O(n)
     return instancedict, op
