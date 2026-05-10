@@ -239,7 +239,7 @@ if __name__ == "__main__":
                 print("Creating connections...")
 
                 #notice that this filter is the only to use pubID2names instead of instance_dict
-                # O(m*k^2)
+                # O(n^2*m)
                 instance_dict, connection_op = connectionfilter(pubID2names,file_options["connection_filtering"])
                 file_options["connection_filtering"] = connection_op + " " + str(file_options["connection_filtering"])
             if file_options["weight_filtering"] != None:
@@ -255,7 +255,7 @@ if __name__ == "__main__":
                 instance_dict, con_sum_op = sumofconnectionfilter(instance_dict,file_options["connectionsummed_filtering"])
                 file_options["connectionsummed_filtering"] = con_sum_op + " " + file_options["connectionsummed_filtering"]
         
-            # Overall runtime for this section: All of the above may be activated in which case O(1+m*k^2+3k). Simplified: O(m*k^2)
+            # Overall runtime for this section: All of the above may be activated in which case O(1+n^2*m+3k). Simplified: O(n^2*m)
 
             # Write filtered file
             print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv"}...")
@@ -270,5 +270,5 @@ if __name__ == "__main__":
         usage(file_err)
 
 # For the entire program, worst case:
-# Overall runtime is determined as O(1+n^2*m+k) + O(1+m*k^2+3k) + O(k) = After simplifying: O(m*k^2)
+# Overall runtime is determined as O(1+n^2*m+k) + O(1+n^2*m+3k) + O(k) = After simplifying: O(n^2*m)
 # It seems our connections function is a bottleneck for runtime.

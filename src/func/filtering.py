@@ -86,7 +86,7 @@ def connectionfilter(pubidnames:dict, min_connections:int, op:str, prog_len:list
     except ValueError:
         combined_dict = {}
 
-    # Overall runtime O(n^2 * m + m + 1). Simplified: O(m*k^2)
+    # Overall runtime O(n^2 * m + m + 1). Simplified: O(n^2 * m)
     return (combined_dict), op
 
 @progresslength
