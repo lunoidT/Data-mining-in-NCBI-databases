@@ -23,13 +23,13 @@ def usage(msg=None):
     if msg is not None:
         print(msg, "\n")
 
-    print("Usage: cytomaker.py <tax_id> [filter] [-q <int> [-s]")
-    print("For more information enter: cytomaker.py help")
+    print("Usage: src/cytomaker.py <tax_id> [filter] [-q <int> [-s]")
+    print("For more information enter: src/cytomaker.py help")
     sys.exit(1)
 
 def help():
     """ More information about options """
-    print("Usage: cytomaker.py <tax_id> [filter] [-q <int> [-s]]")
+    print("Usage: src/cytomaker.py <tax_id> [filter] [-q <int> [-s]]")
     print("Filtering options:")
     print("-w <int> Filtering based on weight of connections between genes")
     print("-c <int> Filtering based on amount of connections to gene")
