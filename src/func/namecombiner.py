@@ -1,7 +1,7 @@
 # for runtime analysis:
 # n will indicate genenames 
 # m will indicate pubmedID's
-# k will indicate amount of genenames within each value in the ID2names dictionary
+# k will indicate amount of connections
 
 from random import sample
 from func.progress_bar import progress_bar

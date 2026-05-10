@@ -3,7 +3,7 @@
 # for runtime analysis:
 # n will indicate genenames 
 # m will indicate pubmedID's
-# k will indicate amount of gene-names within each value in the ID2names dictionary in namecombiner.py
+# k will indicate amount of connections
 
 import sys
 import os
