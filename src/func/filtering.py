@@ -103,26 +103,6 @@ def namefilter(instancedict:dict, genename:int, prog_len:list[int,int]):
             raise ValueError("The filter isn't filtering due to  wrongful arguments")
 
     namefitereddict = dict()
-    if op == "including":
-        # O(k)
-        for instance in instancedict:
-            prog_len[0] += 1
-            # O(1) since the instance list always has length of 2
-            if genename in instance:
-                namefitereddict[instance] = instancedict[instance]
-            progress_bar(prog_len[0],prog_len[1])
-
-    elif op == "excluding":
-        # O(k)
-        for instance in instancedict:
-            prog_len[0] += 1
-            # O(1), as mentioned above
-            if genename not in instance:
-                namefitereddict[instance] = instancedict[instance]
-            progress_bar(prog_len[0],prog_len[1])
-
-### LUNA
-    namefitereddict = dict()
      # O(k)
     for instance in instancedict:
         if op == "including":
@@ -137,7 +117,6 @@ def namefilter(instancedict:dict, genename:int, prog_len:list[int,int]):
 
         prog_len[0] += 1
         progress_bar(prog_len[0],prog_len[1])
-### LUNA
 
     # This "error" message helps the user realize that a gene perhaps is more/less prevalent than foreseen and lost to filtering
     if instancedict and not namefitereddict:
@@ -158,27 +137,12 @@ def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str,prog_len:list
     print("Be aware that this filter requires a substantial amount of times")
     for connected_instance in instancedict:
         prog_len[0] += .5
-        if (connected_instance[0] in connectiondict):
-            connectiondict[connected_instance[0]] += int(instancedict[connected_instance])
-        else:
-            connectiondict[connected_instance[0]] = int(instancedict[connected_instance])
-        if (connected_instance[1] in connectiondict):
-            connectiondict[connected_instance[1]] += int(instancedict[connected_instance])
-        else:
-            connectiondict[connected_instance[1]] = int(instancedict[connected_instance])
-        progress_bar(prog_len[0],prog_len[1])
-
-### LUNA
-    for connected_instance in instancedict:
-        prog_len[0] += .5
         for i in range([0,1]):
             if (connected_instance[i] in connectiondict):
                 connectiondict[connected_instance[i]] += int(instancedict[connected_instance])
             else:
                 connectiondict[connected_instance[i]] = int(instancedict[connected_instance])
         progress_bar(prog_len[0],prog_len[1])
-### LUNA
-
 
     print("Stay strong kings and queens! The filtering is still ongoing!")
     # All connections to genes with unacceptable targetsum are removed 
