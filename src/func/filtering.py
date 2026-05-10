@@ -98,7 +98,7 @@ def namefilter(instancedict:dict, genename:int, prog_len:list[int,int]):
         "E.g. all entries including/excluding this genename\n")
 
     if op not in {"including","excluding"}:
-            raise ValueError("The filter isn't filtering due to  wrongful arguments")
+            raise ValueError(f"The filter isn't filtering due to  wrongful argument {op}")
 
     namefitereddict = dict()
      # O(k)
