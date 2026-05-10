@@ -131,7 +131,7 @@ def cytoload(oldfile):
                 if len(parts) < 3:
                     raise ValueError(f"Unable to load from malformed cytofile: {oldfile}")
             
-                instance_dict[(parts[0], parts[1])] = parts[2]
+                instance_dict[(parts[0], parts[1])] = int(parts[2])
 
     # Refuse to load empty file
     if instance_dict == {}:
