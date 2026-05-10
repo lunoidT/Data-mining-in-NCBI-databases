@@ -142,7 +142,6 @@ def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str,prog_len:list
                 connectiondict[connected_instance[i]] = int(instancedict[connected_instance])
         progress_bar(prog_len[0],prog_len[1])
 
-    print("Stay strong kings and queens! The filtering is still ongoing!")
     # All connections to genes with unacceptable targetsum are removed 
     # O(k)
     for key in list(instancedict.keys()):
