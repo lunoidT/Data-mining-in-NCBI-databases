@@ -95,6 +95,11 @@ def parse_command():
             # if -n <str> are the final argumetns
             else:
                 name = " ".join(sys.argv[1:])
+
+            # Controlling user input
+            if len(name) == 0:
+                usage("Please provide a name after -n.")
+            
             options["name_filtering"] = name
             filtering += 1
 
@@ -129,7 +134,7 @@ def parse_command():
     return options, filtering
 
 #### Functions for and writing loading files ####
-# overall for cytoload: O(n)
+# overall for cytoload: O(k)
 def cytoload(oldfile):
     """ Loading cytoscape files from already mined tax IDs """
     with open(oldfile) as infile:
@@ -155,10 +160,10 @@ def cytoload(oldfile):
     # Worst case for the function is O(k+1). Simplified O(k).
     return instance_dict    
 
-# overall for cytowrite: O(n)
+# overall for cytowrite: O(k)
 def cytowrite(cytofile:str,instance_dict:dict,info_txt=None):
     """ Writes dictionary to file """
-    # Making it readable for cytoscape
+    # Making dict readable for cytoscape
     with open(cytofile, "w") as outfile:
         # Write info text if any
         if info_txt != None:
@@ -166,7 +171,7 @@ def cytowrite(cytofile:str,instance_dict:dict,info_txt=None):
             
         outfile.write("#name1\tname2\tweight\n")
 
-        # O(n)
+        # O(k)
         for names, weight in instance_dict.items():
             outfile.write("\t".join(names) + "\t" + str(weight) + "\n")
 
@@ -183,16 +188,17 @@ if __name__ == "__main__":
     try:
         # Find out if Taxid already had been mined, 
         # If so load the cytoscape file to a dict and use that for filtering
-        # For this section the worst-case runtime is O(4n+m+2(m*k^2))
         print("Loading files...")
         if "cytofile_" + file_options["tax_id"] + ".csv" in os.listdir("cytofiles"): 
-            # O(n)
+            # O(k), where k is amount of connections in existing file
             instance_dict = cytoload("cytofiles/cytofile_" + file_options["tax_id"] + ".csv")
             print("Loaded files successfully from existing file into a dictionary.")
+
+            # Overall runtime in this section for previously saved file: O(n)
         else:
             # Process infomation from genbank files to a dict
             # pubID2names = {PubmedID : {set of gene names that has this ID}}
-            # O(n+m) is worst case
+            # Constant runtime: O(1) 
             pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
             print("Loaded files successfully to a dictionary.")
 
@@ -201,23 +207,25 @@ if __name__ == "__main__":
             if file_options["quick_filter"] != None:
                 print("Combining names...")
                 print("Quick filtering activated.")
-                # O(m*k^2) see namecombiner. 
+                # O(n^2*m), worst case. See namecombiner. 
                 instance_dict = combinations(pubID2names,file_options["quick_filter"],file_options["sampling"])
                 print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
                 # writing file
                 file_txt = f"#Tax ID: {file_options["tax_id"]}. Quick filtered with max length {file_options["quick_filter"]}. Sampling: {file_options["sampling"]}"
-                # O(n)
+                # O(k)
                 cytowrite(file_path + "cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict,info_txt=file_txt)
             else:
                 print("Combining names...")
-                # O(m*k^2) see namecombiner
+                # O(n^2*m) see namecombiner
                 instance_dict = combinations(pubID2names)
                 # Save unfiltered version for later use 
                 print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
                 file_txt = f"#Tax ID: {file_options["tax_id"]}. Unfiltered cytofile."
-                # O(n)
+                # O(k)
                 cytowrite(file_path + "cytofile_" + file_options["tax_id"] + ".csv",instance_dict,info_txt=file_txt)
-        # Overall runtime for this section: O(4n+m+2(m*k^2)). After simplifying: O(n+m+m*k^2)
+            
+            # Overall runtime for this section when no previous file: O(1+n^2*m+k). After simplifying: O(n^2*m)
+            # This applies for both quickfilter and no quickfilter.
         
 
         # Filter instance dict
@@ -226,42 +234,41 @@ if __name__ == "__main__":
             if file_options["connection_filtering"] != None:
                 # If file for tax ID is already loaded, instance dict must be made
                 if pubID2names == None:
-                    # O(n+m)
+                    # O(1)
                     pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
                 print("Creating connections...")
 
                 #notice that this filter is the only to use pubID2names instead of instance_dict
                 # O(m*k^2)
-                instance_dict, connction_op = connectionfilter(pubID2names,file_options["connection_filtering"])
-                file_options["connection_filtering"] = connction_op + " " + str(file_options["connection_filtering"])
+                instance_dict, connection_op = connectionfilter(pubID2names,file_options["connection_filtering"])
+                file_options["connection_filtering"] = connection_op + " " + str(file_options["connection_filtering"])
             if file_options["weight_filtering"] != None:
-                #  O(n)
+                # O(k)
                 instance_dict, weight_op = weightfilter(instance_dict, file_options["weight_filtering"])
                 file_options["weight_filtering"] = weight_op + " " + str(file_options["weight_filtering"]) 
             if file_options["name_filtering"] != None:
-                #  O(n)
+                # O(k)
                 instance_dict, name_op = namefilter(instance_dict,file_options["name_filtering"])
                 file_options["name_filtering"] = name_op + " " + file_options["name_filtering"]
             if file_options["connectionsummed_filtering"] != None:
-                #  O(n)
+                # O(k)
                 instance_dict, con_sum_op = sumofconnectionfilter(instance_dict,file_options["connectionsummed_filtering"])
                 file_options["connectionsummed_filtering"] = con_sum_op + " " + file_options["connectionsummed_filtering"]
         
-        # Overall runtime for this section: All of the above may be activated in which case O(n+m+m*k^2)
-        
+            # Overall runtime for this section: All of the above may be activated in which case O(1+m*k^2+3k). Simplified: O(m*k^2)
 
             # Write filtered file
             print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv"}...")
             file_txt = f"#Tax ID: {file_options["tax_id"]}. Weight filter: {file_options["weight_filtering"]}. Commection filter: {file_options["connection_filtering"]}. Name filter: {file_options["name_filtering"]}. Sum of connections filter: {file_options['connectionsummed_filtering']}."
-            # O(n)
+            # O(k)
             cytowrite(file_path + "cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv",instance_dict,info_txt=file_txt)
-        # Overall runtime for this section: O(n)
+            # Overall runtime for this section: O(k)
 
         print("Program finished.")
 
     except IOError as file_err:
         usage(file_err)
 
-    # In the worst case
-    # Overall runtime here is 
-    # determined as O(n+m+m*k^2) + O(n+m+m*k^2) + O(n) = After simplifying: O(n+m+m*k^2)
+# For the entire program, worst case:
+# Overall runtime is determined as O(1+n^2*m+k) + O(1+m*k^2+3k) + O(k) = After simplifying: O(m*k^2)
+# It seems our connections function is a bottleneck for runtime.
