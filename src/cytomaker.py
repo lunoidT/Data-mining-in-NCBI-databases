@@ -95,6 +95,7 @@ def parse_command():
             # if -n <str> are the final argumetns
             else:
                 name = " ".join(sys.argv[1:])
+                del sys.argv[1:]
 
             # Controlling user input
             if len(name) == 0:
