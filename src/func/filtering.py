@@ -50,7 +50,7 @@ def weightfilter(instance_dict:dict, weight:int, op:str):
 # O(1) from filterwrapper
 @filterwrapper
 def connectionfilter(pubidnames:dict, min_connections:int, op:str):
-    """ Selects entries with a specific amount of connections."""
+    """ Selects entries with a specific amount of connections to the same common pubmedID."""
     from func.namecombiner import combinations
 
     # creates the instance_dict (here connection_dict to differentiate) whilst filtering
@@ -101,7 +101,7 @@ def namefilter(instancedict:dict, genename:int):
 # O(1) from filterwrapper
 @filterwrapper
 def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str):
-    """ Computes the weighed sum of connections and filters accordingly."""
+    """ Computes the weighed sum of connections and filters accordingly for each gene entry."""
     connectiondict = dict()
 
     # Due to the three columns in outputfile (and therefore connectiondict) "gene1, gene2, weight", both [0] and [1] are investigated
