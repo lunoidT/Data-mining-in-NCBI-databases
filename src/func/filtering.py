@@ -10,8 +10,6 @@ def progresslength(func):
         # Variables for progress bar
         prog_len = [0,len(input_dict)]
 
-        print("Filtering initiated!")
-
         return func(input_dict,parameter,prog_len)
     return progressparameter
 
@@ -134,7 +132,7 @@ def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str,prog_len:list
 
     # Due to the three columns in outputfile (and therefore connectiondict) "gene1, gene2, weight", both [0] and [1] are investigated
     # O(k) 
-    print("Be aware that this filter requires a substantial amount of times")
+    print("Be aware that this filter requires a substantial amount of time")
     for connected_instance in instancedict:
         prog_len[0] += .5
         for i in range([0,1]):
