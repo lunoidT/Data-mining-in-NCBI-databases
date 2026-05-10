@@ -15,10 +15,11 @@ def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
     with open(file_info) as infile:
         # geneID_to_name: {GeneID : gene_name }
         geneID_to_name = {}
-        # O(n-x) and in worst case x is insignificantly small
+        # The runtime scales at O(x), where x is the amount of lines in the gene_info file.
+        # But since this file is contant size no matter user input, it is arguably of constant time O(1) 
         for line in infile:
-            line_list = line.split("\t")
-            if tax_id == line_list[0]:
+            if line.startswith(tax_id):
+                line_list = line.strip().split("\t")
                 geneID_to_name[line_list[1]] = line_list[8]
 
             # Updating progress bar
@@ -29,7 +30,8 @@ def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
     # ID2namelist = {PubmedID : {set of gene names that has this ID}}
     pubID2names = {}
     with open(file_gene2pubmed) as infile:
-        # worst case for runtime this means O(m). otherwise another variable can replace m
+        # Simmilarly to above, the file size is constant in the context of our program
+        # O(1)
         for line in infile:
             if line.startswith(tax_id):
                 line_list = line.split()
@@ -49,5 +51,5 @@ def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
 
     print()
     
-    # Worst case simplified O(n+m)
+    # Total runtime O(1)
     return pubID2names
