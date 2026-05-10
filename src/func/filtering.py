@@ -12,7 +12,7 @@ def progresslength(func):
 
         print("Filtering initiated!")
 
-        return func(input_dict,parameter)
+        return func(input_dict,parameter,prog_len)
     return progressparameter
 
 def filterwrapper(func):
