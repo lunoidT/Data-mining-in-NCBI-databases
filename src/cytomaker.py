@@ -245,6 +245,8 @@ if __name__ == "__main__":
             if file_options["connectionsummed_filtering"] != None:
                 #  O(n)
                 instance_dict, con_sum_op = sumofconnectionfilter(instance_dict,file_options["connectionsummed_filtering"])
+                file_options["connectionsummed_filtering"] = con_sum_op + " " + file_options["connectionsummed_filtering"]
+        
         # Overall runtime for this section: All of the above may be activated in which case O(n+m+m*k^2)
         
 
