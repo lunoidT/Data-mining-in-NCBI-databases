@@ -4,26 +4,30 @@
 # k will indicate amount of genenames within each value in the ID2names dictionary in namecombiner.py
 
 def filterwrapper(func):
-    def compops(instance_dict:dict, weight:int):
+    def compops(input_dict:dict, weight:int):
         op = input(f"You've chosen the {str(func).split(' ')[1]}. Please choose one of the following arguments for the filter: less, great, eq, neq\n"
-                   "Eg. all values lesser/greater than selected weight x or equal/not equal to amount of connections, etc.x\n")
+                   "Eg. all values lesser/greater than selected weight x or equal/not equal to amount of connections, etc.\n")
         
-        # O(1) due to membership test in a set
-        if op not in ("less", "great", "eq", "neq"): 
-            raise ValueError("The filter isn't filtering due to an insufficient amount of arguments")
-
         # To confirm valid input and show program hasn't frozen
         print(f"You chose {op}. Initiating:")
 
+        # If the input dictionary is empty, raise error
+        if input_dict == {}:
+            raise ValueError("Filter recived an empty dict. No filtering can be done.")
+
+        # O(1) due to membership test in a set
+        if op not in ("less", "great", "eq", "neq"): 
+            raise ValueError(f"The filter isn't filtering due to wrongful argument {op}")
+
         # find and return comparative operator for weightfiltering
         if op == "less":
-            return func(instance_dict, weight, "<")
+            return func(input_dict, weight, "<")
         elif op == "great":
-            return func(instance_dict, weight, ">")
+            return func(input_dict, weight, ">")
         elif op == "eq":
-            return func(instance_dict, weight, "==")
+            return func(input_dict, weight, "==")
         elif op == "neq":
-            return func(instance_dict, weight, "!=")      
+            return func(input_dict, weight, "!=")      
 
     # The worst case here within the curriculum is O(1)
     return compops
