@@ -104,7 +104,7 @@ def namefilter(instancedict:dict, genename:int):
 
 # O(1) from filterwrapper
 @filterwrapper
-def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str) -> (dict,str):
+def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str):
     """ Computes the weighed sum of connections and filters accordingly for each gene entry."""
     connectiondict = dict()
 
