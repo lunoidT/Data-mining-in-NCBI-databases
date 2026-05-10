@@ -16,7 +16,7 @@ def progresslength(func):
 def filterwrapper(func):
     def compops(input_dict:dict, weight:int, prog_len:list[int,int]):
         op = input(f"You've chosen the {str(func).split(' ')[1]}. Please choose one of the following arguments for the filter: less, great, eq, neq\n"
-                   "Eg. all values lesser/greater than selected weight x or (not) equal to amount of connections, etc.\n")
+                   "Eg. all values lesser/greater than selected weight x or (not) equal to amount of connections, etc.\n").strip()
         
         # To confirm valid input and show program hasn't frozen
         print(f"You chose {op}. Initiating:")
@@ -95,7 +95,7 @@ def namefilter(instancedict:dict, genename:int, prog_len:list[int,int]):
         
     # find and return comperative operator for weightfiltering
     op = input("You've selected namefilter. Please choose one of the following arguments: including, excluding\n"
-        "E.g. all entries including/excluding this genename\n")
+        "E.g. all entries including/excluding this genename\n").strip()
 
     if op not in {"including","excluding"}:
             raise ValueError(f"The filter isn't filtering due to  wrongful argument {op}")
