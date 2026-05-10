@@ -109,14 +109,15 @@ def namefilter(instance_dict:dict, genename:str, prog_len:list[int,int]):
     namefitereddict = dict()
      # O(k)
     for instance in instance_dict:
+        genes1, genes2 = instance
         if op == "including":
             # O(1) since the instance list always has length of 2
-            if genename.lower() in instance:
+            if (genename.lower() in genes1.lower()) or (genename.lower() in genes2.lower()):
                 namefitereddict[instance] = instance_dict[instance]
 
         elif op == "excluding":
             # O(1), as mentioned above
-            if genename.lower() not in instance:
+            if not (genename.lower() in genes1.lower() or genename.lower() in genes2.lower()):
                 namefitereddict[instance] = instance_dict[instance]
 
         prog_len[0] += 1
