@@ -63,7 +63,11 @@ def connectionfilter(pubidnames:dict, min_connections:int, op:str):
 
     # creates a dictionary for all combinations with the remaining entires after filtering 
     # O(m*k^2) will be the worst case scenario here. See namecombiner.py for distinctions between cases.
-    combined_dict = combinations(connection_dict)
+    try:
+        combined_dict = combinations(connection_dict)
+    # if all entries are removed by filter, combinations will raise ValueError
+    except ValueError:
+        combined_dict = {}
 
     # Overall runtime O(m*k^2 + m + 1). Simplified: O(m*k^2)
     return (combined_dict), op
