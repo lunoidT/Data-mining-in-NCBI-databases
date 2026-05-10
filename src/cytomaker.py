@@ -134,9 +134,10 @@ def cytoload(oldfile):
     """ Loading cytoscape files from already mined tax IDs """
     with open(oldfile) as infile:
         instance_dict = {}
+        # O(k)
         for line in infile:
-            # O(n-x) where x is the ammount of single-line comments
             if not line.startswith("#"):
+                # O(1), since instance dict has 3 collumns
                 parts = line.strip().split("\t") 
 
                 # not accepting less than 3 tab seperated elements but still ignores empty lines
@@ -151,7 +152,7 @@ def cytoload(oldfile):
     if instance_dict == {}:
         raise ValueError(f"Can't load empty file: {oldfile}")
 
-    # Worst case for the function is O(n)
+    # Worst case for the function is O(k+1). Simplified O(k).
     return instance_dict    
 
 # overall for cytowrite: O(n)
