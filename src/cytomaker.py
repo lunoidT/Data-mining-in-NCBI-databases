@@ -79,12 +79,25 @@ def parse_command():
             options["connection_filtering"] = amount
             filtering += 1
         
+        # -n is followed by a name which takes up multiple words (spaces) which must all be removed
         elif options["name_filtering"] == None and arg == "-n":
-            #name = sys.argv.pop(1)
-            name = " ".join(sys.argv[1:])
+            end_index = False
+            for i in range(len(sys.argv)):
+                if sys.argv[i] in ("-w", "-c", "-u", "-q", "-s"):
+                    end_index = i
+                    break
+            
+            # remove the entire gene name from the parsing arguments to ready for next potential filter
+            if end_index:
+                name = " ".join(sys.argv[1:end_index])
+                del sys.argv[1:end_index]
+            
+            # if -n <str> are the final argumetns
+            else:
+                name = " ".join(sys.argv[1:])
             options["name_filtering"] = name
             filtering += 1
-            break
+
 
         elif options["connectionsummed_filtering"] == None and arg == '-u':
             try:
