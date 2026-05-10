@@ -16,7 +16,7 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
     prog_len = len(pubID2names)
 
     if max_size < 2 and max_size != -1:
-        raise ValueError("Max size too small.") # maybe replace with usage
+        raise ValueError("Max size too small.")
 
     # Combining different Pubmed IDs and counting their weight
     instance_dict = {} # {combination, weight}
