@@ -1,4 +1,4 @@
-# for runtime analysis:
+# For runtime analysis:
 # n will indicate genenames 
 # m will indicate pubmedID's
 # k will indicate amount of connections
@@ -21,7 +21,7 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
 
     # Combining different Pubmed IDs and counting their weight
     instance_dict = {} # {combination, weight}
-    # O(m) 
+    # O(n^2 * m) 
     for names in pubID2names.values():
         # Error handling and input control
         if isinstance(names,list):
@@ -46,9 +46,9 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
         # This is always true for worst runtime scenario
         if max_size == -1 or len(names) <= max_size:
             # make all combinations
-            # O(m*k) due to nested loop. This loop can be much larger than previous so a new variable is declared
+            # O(n^2) due to nested loop.
             for i in range(len(names)-1):
-                # O(m*k^2) due to another nested loop (of equal size to previous)
+                # O(n), worst case
                 for j in range(i+1,len(names)):
 
                     # Add to dict / increment
@@ -64,6 +64,6 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
     # Go to newline after progress bar
     print()
 
-    # In worst case scenario, O(m*k^2) is the outcome. 
-    # If k is much larger than m, m can be neglected but this likely won't be the case
+    # In worst case scenario, O(n^2 * m) is the outcome. 
+    # If n is much larger than m, m can be neglected but this likely won't be the case
     return instance_dict
