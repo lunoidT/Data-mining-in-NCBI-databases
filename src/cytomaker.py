@@ -38,7 +38,7 @@ def help():
     print()
     print("-q <int> : Quick Filter option.\nUse if running on tax ID with large amount of data, and computer is unable to processs.") 
     print("Ignores Pubmed articles with too many entries, since that can be a bottleneck for runtime and memory.")
-    print("The integer folowing -q is the max amount of entries allowed by the user")
+    print("The integer folowing -q is the max amount of entries allowed by the user in each article")
     print("-s : Random sampling option for Quick Filter, instead of ignoring articles with many entries, it randomly reduces to max size")
     print("Note: Quckfiltering is ignored if file for tax ID is already loaded")
     sys.exit(1)
