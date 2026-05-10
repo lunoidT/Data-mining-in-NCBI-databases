@@ -42,7 +42,7 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
             # New list length 
             names = sample(names,max_size)
 
-        # This is always true for worst runtime scenario
+        # No quick filtering or acceptable range of gene names  
         if max_size == -1 or len(names) <= max_size:
             # make all combinations
             # O(n^2) due to nested loop.
