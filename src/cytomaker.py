@@ -143,7 +143,7 @@ def cytoload(oldfile):
         # O(k)
         for line in infile:
             if not line.startswith("#"):
-                # O(1), since instance dict has 3 collumns
+                # O(1), since instance dict has 3 collumns (constant)
                 parts = line.strip().split("\t") 
 
                 # not accepting less than 3 tab seperated elements but still ignores empty lines
@@ -195,7 +195,7 @@ if __name__ == "__main__":
             instance_dict = cytoload("cytofiles/cytofile_" + file_options["tax_id"] + ".csv")
             print("Loaded files successfully from existing file into a dictionary.")
 
-            # Overall runtime in this section for previously saved file: O(n)
+            # Overall runtime in this section for previously saved file: O(k)
         else:
             # Process infomation from genbank files to a dict
             # pubID2names = {PubmedID : {set of gene names that has this ID}}
@@ -211,7 +211,7 @@ if __name__ == "__main__":
                 # O(n^2*m), worst case. See namecombiner. 
                 instance_dict = combinations(pubID2names,file_options["quick_filter"],file_options["sampling"])
                 print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
-                # writing file
+                # writing file, specifying that it is quickfiltered in filename and in file info txt
                 file_txt = f"#Tax ID: {file_options["tax_id"]}. Quick filtered with max length {file_options["quick_filter"]}. Sampling: {file_options["sampling"]}"
                 # O(k)
                 cytowrite(file_path + "cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv",instance_dict,info_txt=file_txt)
@@ -256,7 +256,8 @@ if __name__ == "__main__":
                 instance_dict, con_sum_op = sumofconnectionfilter(instance_dict,file_options["connectionsummed_filtering"])
                 file_options["connectionsummed_filtering"] = con_sum_op + " " + file_options["connectionsummed_filtering"]
         
-            # Overall runtime for this section: All of the above may be activated in which case O(1+n^2*m+3k). Simplified: O(n^2*m)
+            # Overall runtime for this section (filtering): All of the above may be activated in which case O(1+n^2*m+3k). 
+            # Simplified: O(n^2*m)
 
             # Write filtered file
             print(f"Filtered file successfully. Writing file to {"cytofile_" + file_options["tax_id"] + "_filtered_" + date + ".csv"}...")
@@ -272,4 +273,3 @@ if __name__ == "__main__":
 
 # For the entire program, worst case:
 # Overall runtime is determined as O(1+n^2*m+k) + O(1+n^2*m+3k) + O(k) = After simplifying: O(n^2*m)
-# It seems our connections function is a bottleneck for runtime.

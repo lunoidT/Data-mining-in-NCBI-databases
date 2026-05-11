@@ -77,11 +77,11 @@ def connectionfilter(pubidnames:dict, min_connections:int, op:str, prog_len:list
         prog_len[0] += 1
         if eval(f"{len(pubidnames[connected_instance])} {op} {min_connections}"):
             connection_dict[connected_instance] = pubidnames[connected_instance]
-            progress_bar(prog_len[0],prog_len[1])
+        progress_bar(prog_len[0],prog_len[1])
 
     # creates a dictionary for all combinations with the remaining entires after filtering 
     try:
-        #  O(n^2 * m) will be the worst case scenario here. See namecombiner.py for distinctions between cases.
+        #  O(n^2*m) will be the worst case scenario here. See namecombiner.py for distinctions between cases.
         combined_dict = combinations(connection_dict)
     # if all entries are removed by filter, combinations will raise ValueError
     except ValueError:
@@ -90,7 +90,7 @@ def connectionfilter(pubidnames:dict, min_connections:int, op:str, prog_len:list
     if len(pubidnames) == len(connection_dict):
         print("This filter did nothing with your chosen parameters")
 
-    # Overall runtime O(n^2 * m + m + 1). Simplified: O(n^2 * m)
+    # Overall runtime O(n^2*m + m + 1). Simplified: O(n^2*m)
     return (combined_dict), op
 
 @progresslength
@@ -107,16 +107,16 @@ def namefilter(instance_dict:dict, genename:str, prog_len:list[int,int]):
     print(f"You chose {op}. Initiating:")
 
     namefitereddict = dict()
-     # O(k)
+     # O(k*2(s+s))
     for instance in instance_dict:
         genes1, genes2 = instance
         if op == "including":
-            # O(1) since the instance list always has length of 2
+            # O(s+s), where s is the size of the gene1 name or gene2 name.  
             if (genename.lower() in genes1.lower()) or (genename.lower() in genes2.lower()):
                 namefitereddict[instance] = instance_dict[instance]
 
         elif op == "excluding":
-            # O(1), as mentioned above
+            # O(s+s), as mentioned above
             if not (genename.lower() in genes1.lower() or genename.lower() in genes2.lower()):
                 namefitereddict[instance] = instance_dict[instance]
 
@@ -130,7 +130,7 @@ def namefilter(instance_dict:dict, genename:str, prog_len:list[int,int]):
     if len(instance_dict) == len(namefitereddict):
         print("This filter did nothing with your chosen parameters")
 
-    # Overall runtime O(k+1). After simplifying: O(k)
+    # Overall runtime O(k*2(s+s)). Since s is likely to be insignificant in size compared to k, it is ignored. After simplifying: O(k)
     return namefitereddict, op
 
 # O(1) from filterwrapper
@@ -140,12 +140,14 @@ def sumofconnectionfilter(instance_dict:dict, targetsum:int, op:str,prog_len:lis
     """ Computes the weighed sum of connections and filters accordingly for each gene entry."""
     connection_dict = dict()
 
-    # Due to the three columns in outputfile (and therefore connectiondict) "gene1, gene2, weight", both [0] and [1] are investigated
-    # O(k) 
     print("Be aware that this filter requires a substantial amount of time")
+    # Due to the three columns in outputfile (and therefore connectiondict) "gene1, gene2, weight", both [0] and [1] are investigated
+    # O(k*1*1) 
     for connected_instance in instance_dict:
         prog_len[0] += .5
+        # O(1*1), since constant range of for loop.
         for i in range([0,1]):
+            # O(1), since connection dict is a dictionary
             if (connected_instance[i] in connection_dict):
                 connection_dict[connected_instance[i]] += int(instance_dict[connected_instance])
             else:
@@ -153,17 +155,19 @@ def sumofconnectionfilter(instance_dict:dict, targetsum:int, op:str,prog_len:lis
         progress_bar(prog_len[0],prog_len[1])
 
     # All connections to genes with unacceptable targetsum are removed 
-    # O(k)
+    # O(k*1)
     for key in list(instance_dict.keys()):
         prog_len[0] += .5
         if not eval(f"{connection_dict[key[0]]} {op} {targetsum}"):
+            # O(1), since instance_dict is a dictionary
             del instance_dict[key]
         elif not eval(f"{connection_dict[key[1]]} {op} {targetsum}"):
+            # O(1)
             del instance_dict[key]
         progress_bar(prog_len[0],prog_len[1])
 
     if len(connection_dict) == len(instance_dict):
         print("OBS! This filter did nothing with your chosen parameters")
 
-    # Overall runtime O(2k). After simplifying: O(k)
+    # Overall runtime O(k*1*1 + k*1). After simplifying: O(k)
     return instance_dict, op

@@ -20,7 +20,7 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
 
     # Combining different Pubmed IDs and counting their weight
     instance_dict = {} # {combination, weight}
-    # O(n^2 * m) 
+    # O(n^2 * m), including nested loops
     for names in pubID2names.values():
         # Error handling and input control
         if isinstance(names,list):
@@ -51,7 +51,9 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
                 for j in range(i+1,len(names)):
 
                     # Add to dict / increment
+                    # O(1), since sorted is on a list with a constant length of 2
                     m = tuple(sorted([names[i],names[j]]))
+                    # O(1), since instance_dict is a dict
                     if m not in instance_dict:
                         instance_dict[m] = 1
                     else:
@@ -62,7 +64,7 @@ def combinations(pubID2names:dict,max_size=-1,sampling=None) -> dict:
         progress_bar(progress,prog_len)
     # Go to newline after progress bar
     print()
-
-    # In worst case scenario, O(n^2 * m) is the outcome. 
-    # If n is much larger than m, m can be neglected but this likely won't be the case
+    
+    # In worst case scenario, O(n^2 * m) is the outcome. Constant O(1) is ignored since it is insignificant in comparison.
+    # If n is much larger than m, m can be neglected but this likely won't be the case.
     return instance_dict

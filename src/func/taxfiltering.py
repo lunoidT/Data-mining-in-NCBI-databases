@@ -36,7 +36,7 @@ def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
             if line.startswith(tax_id):
                 line_list = line.split()
                 geneID, PubID = line_list[1], line_list[2]
-
+                # O(1) since pubID2names is a dict
                 if PubID not in pubID2names:
                     pubID2names[PubID] = set()
                 try:
