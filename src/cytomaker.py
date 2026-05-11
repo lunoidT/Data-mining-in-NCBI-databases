@@ -243,14 +243,14 @@ if __name__ == "__main__":
                 # O(n^2*m)
                 instance_dict, connection_op = connectionfilter(pub_ID2_names,file_options["connection_filtering"])
                 file_options["connection_filtering"] = connection_op + " " + str(file_options["connection_filtering"])
-            if file_options["weight_filtering"] != None:
-                # O(k)
-                instance_dict, weight_op = weightfilter(instance_dict, file_options["weight_filtering"])
-                file_options["weight_filtering"] = weight_op + " " + str(file_options["weight_filtering"]) 
             if file_options["name_filtering"] != None:
                 # O(k)
                 instance_dict, name_op = namefilter(instance_dict,file_options["name_filtering"])
                 file_options["name_filtering"] = name_op + " " + file_options["name_filtering"]
+            if file_options["weight_filtering"] != None:
+                # O(k)
+                instance_dict, weight_op = weightfilter(instance_dict, file_options["weight_filtering"])
+                file_options["weight_filtering"] = weight_op + " " + str(file_options["weight_filtering"]) 
             if file_options["connectionsummed_filtering"] != None:
                 # O(k)
                 instance_dict, con_sum_op = sumofconnectionfilter(instance_dict,file_options["connectionsummed_filtering"])
