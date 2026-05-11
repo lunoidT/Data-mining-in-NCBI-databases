@@ -17,7 +17,7 @@ def progresslength(func):
 
 def filterwrapper(func):
     # Filterwrapper will always (if called) be called after progresslength and therefore has an additional parameter
-    def compops(input_dict:dict, weight:int, prog_len:list[int,int]):
+    def compops(input_dict:dict, weight:int, op:str, prog_len:list[int,int]):
         
         # Find and return comperative operator for the selected filter (while loop allows for mistakes without crashing the program)
         while op not in {"less", "great", "eq", "neq"}: 
@@ -100,7 +100,7 @@ def connectionfilter(Pub_ID_2_names:dict, min_connections:int, op:str, prog_len:
     return (combined_dict), op
 
 @progresslength
-def namefilter(instance_dict:dict, gene_name:str, prog_len:list[int,int]):
+def namefilter(instance_dict:dict, gene_name:str, op:str, prog_len:list[int,int]):
     """ Selects all connections of entries with a specific mentioned gene name."""
     namefitered_dict = dict()
   
