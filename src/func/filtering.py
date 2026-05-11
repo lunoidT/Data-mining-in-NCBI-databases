@@ -27,6 +27,7 @@ def filterwrapper(func):
             op = input(f'You may write "less", "great", "eq" or "neq"')      
            
         print(f"You chose {op}. Initiating:")
+        print()
 
         # If the input dictionary is empty, raise error
         if input_dict == {}:
@@ -60,6 +61,7 @@ def weightfilter(instance_dict:dict, weight:int, op:str, prog_len:list[int,int])
         if eval(f"{instance_dict[key]} {op} {weight}"):
             filtered_dict[key] = instance_dict[key]
         progressbar(prog_len[0],prog_len[1])
+    print()
 
     if len(filtered_dict) == len(instance_dict):
         print("OBS! This filter did nothing with your chosen parameters")
@@ -130,6 +132,7 @@ def namefilter(instance_dict:dict, gene_name:str, prog_len:list[int,int]):
 
         prog_len[0] += 1
         progressbar(prog_len[0],prog_len[1])
+        print()
 
     # This "error" message helps the user realize that a gene perhaps is more/less prevalent than foreseen and lost to filtering
     if instance_dict and not namefitered_dict:
@@ -174,6 +177,7 @@ def sumofconnectionfilter(instance_dict:dict, target_sum:int, op:str,prog_len:li
             # O(1)
             del instance_dict[key]
         progressbar(prog_len[0],prog_len[1])
+    print()
 
     if len(connection_dict) == len(instance_dict):
         print("OBS! This filter did nothing with your chosen parameters")
