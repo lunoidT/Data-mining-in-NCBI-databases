@@ -1,15 +1,15 @@
 import os
-from func.progress_bar import progress_bar
+from func.progress_bar import progressbar
 # for runtime analysis:
 # n will indicate genenames 
 # m will indicate pubmedID's
 
-def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
+def taxfilter(file_info,file_gene_2_pubmed,tax_id:str) -> dict:
     """ Creates dict containing Pubmed ID and gene names for given taxid """
 
     # Variables for progress bar
     progress = 0
-    max_len = os.path.getsize(file_info) + os.path.getsize(file_gene2pubmed)
+    max_len = os.path.getsize(file_info) + os.path.getsize(file_gene_2_pubmed)
 
     # Create translation dict for finding relevant gene names
     with open(file_info) as infile:
@@ -24,12 +24,12 @@ def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
 
             # Updating progress bar
             progress += len(line)
-            progress_bar(progress,max_len)
+            progressbar(progress,max_len)
 
     # Create dict containing Pubmed connections
     # pubID2namelist = {PubmedID : {set of gene names that has this ID}}
     pubID2names = {}
-    with open(file_gene2pubmed) as infile:
+    with open(file_gene_2_pubmed) as infile:
         # Simmilarly to above, the file size is constant in the context of our program
         # O(1)
         for line in infile:
@@ -47,7 +47,7 @@ def taxfilter(file_info,file_gene2pubmed,tax_id:str) -> dict:
                     
             # Updating progress bar
             progress += len(line)
-            progress_bar(progress,max_len)
+            progressbar(progress,max_len)
 
     print()
     

@@ -6,16 +6,19 @@ import pytest
 # Because of the wrapper in the filtering.py, which requires user input, it is difficult to call the function from import.
 # Therefore the function is inserted directly in this file:
 def weightfilter(instance_dict:dict, weight:int, op:str):
-    """ Selects entries with a specific weight in dictionary.
-    Dictionary structure: {(x.y):weight} """
+    """ Selects entries with a specific weight in dictionary."""
     filtered_dict = {}
 
-    # O(n)
+    # compare each weight to target (if "op == less"" this means: len(pubidnames[connected_instance])} < {min_connections})
+    # O(k)
     for key in instance_dict: 
         if eval(f"{instance_dict[key]} {op} {weight}"):
             filtered_dict[key] = instance_dict[key]
 
-    # Overall runtime O(n+1). Simplified O(n)
+    if len(filtered_dict) == len(instance_dict):
+        print("OBS! This filter did nothing with your chosen parameters")
+
+    # Overall runtime O(k+1). Simplified O(k)
     return filtered_dict, op
 
 ### Input and output ###

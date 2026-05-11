@@ -5,32 +5,37 @@ import pytest
 
 # Because of the wrapper in the filtering.py, which requires user input, it is difficult to call the function from import.
 # Therefore the function is inserted directly in this file:
-def sumofconnectionfilter(instancedict:dict, targetsum:int, op:str):
+def sumofconnectionfilter(instance_dict:dict, target_sum:int, op:str):
     """ Computes the weighed sum of connections and filters accordingly for each gene entry."""
-    connectiondict = dict()
+    connection_dict = dict()
 
+    print("Be aware that this filter requires a substantial amount of time")
     # Due to the three columns in outputfile (and therefore connectiondict) "gene1, gene2, weight", both [0] and [1] are investigated
-    # O(n) 
-    for connected_instance in instancedict:
-        if (connected_instance[0] in connectiondict):
-            connectiondict[connected_instance[0]] += int(instancedict[connected_instance])
-        else:
-            connectiondict[connected_instance[0]] = int(instancedict[connected_instance])
-        if (connected_instance[1] in connectiondict):
-            connectiondict[connected_instance[1]] += int(instancedict[connected_instance])
-        else:
-            connectiondict[connected_instance[1]] = int(instancedict[connected_instance])
+    # O(k*1*1) 
+    for connected_instance in instance_dict:
+        # O(1*1), since constant range of for loop.
+        for i in range([0,1]):
+            # O(1), since connection dict is a dictionary
+            if (connected_instance[i] in connection_dict):
+                connection_dict[connected_instance[i]] += int(instance_dict[connected_instance])
+            else:
+                connection_dict[connected_instance[i]] = int(instance_dict[connected_instance])
 
-    # all connections to genes with unacceptible targetsum are removed 
-    # O(n)
-    for key in list(instancedict.keys()):
-        if not eval(f"{connectiondict[key[0]]} {op} {targetsum}"):
-            del instancedict[key]
-        elif not eval(f"{connectiondict[key[1]]} {op} {targetsum}"):
-            del instancedict[key]
+    # All connections to genes with unacceptable targetsum are removed 
+    # O(k*1)
+    for key in list(instance_dict.keys()):
+        if not eval(f"{connection_dict[key[0]]} {op} {target_sum}"):
+            # O(1), since instance_dict is a dictionary
+            del instance_dict[key]
+        elif not eval(f"{connection_dict[key[1]]} {op} {target_sum}"):
+            # O(1)
+            del instance_dict[key]
 
-    # Overall runtime O(2n + 1). After simplifying: O(n)
-    return instancedict, op
+    if len(connection_dict) == len(instance_dict):
+        print("OBS! This filter did nothing with your chosen parameters")
+
+    # Overall runtime O(k*1*1 + k*1). After simplifying: O(k)
+    return instance_dict, op
 
 ### Input and output ###
 @pytest.fixture
@@ -62,12 +67,12 @@ expected_more4 = {("PadR family transcriptional regulator","winged helix-turn-he
 ### Testing ###
 # Filter seems to be extreme in the amount of entries it removes, but with larger data it can be relevant.
 @pytest.mark.parametrize("tagetsum, expected", [(3,expected_none), (4,expected_none), (11,expected_all), (5,expected_none)])
-def test_sumofconnectionfilter_less(tagetsum, expected, input_dict):
-    assert sumofconnectionfilter(input_dict,tagetsum,"<") == (expected, "<")
+def test_sumofconnectionfilter_less(taget_sum, expected, input_dict):
+    assert sumofconnectionfilter(input_dict,taget_sum,"<") == (expected, "<")
     
 @pytest.mark.parametrize("tagetsum, expected", [(3,expected_more3), (4,expected_more4), (6,expected_none), (1,expected_all)])
-def test_sumofconnectionfilter_more(tagetsum, expected, input_dict):
-    assert sumofconnectionfilter(input_dict,tagetsum,">") == (expected, ">")
+def test_sumofconnectionfilter_more(taget_sum, expected, input_dict):
+    assert sumofconnectionfilter(input_dict,taget_sum,">") == (expected, ">")
 
 def test_sumofconnectionfilter_eq():
     input_dict = {("proteinA","proteinB"):3,

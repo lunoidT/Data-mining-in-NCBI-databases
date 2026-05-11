@@ -14,7 +14,7 @@ from func.filtering import weightfilter, connectionfilter, namefilter, sumofconn
 
 # Files
 filename_info = "smalldummy_info" #"gene_info"
-file_gene2pubmed = "dummy2pubmed"
+file_gene_2_PubMed = "dummy2pubmed"
 file_path = "cytofiles/"
 
 #### Funtions for parsing commandline ###
@@ -43,12 +43,12 @@ def help():
     print("Note: Quckfiltering is ignored if file for tax ID is already loaded")
     sys.exit(1)
 
-def parse_command():
+def parsecommand():
     """ parsing commandline options, returns dictionary with options """
     options = {"tax_id":None, "weight_filtering":None, "connection_filtering":None, "name_filtering":None, "connectionsummed_filtering":None, "quick_filter":None, "sampling":None}
 
     filtering = 0
-    # constant time with a max of 8 iterations. ignored in runtime evaluatoin
+    # Constant time with a max of 8 iterations. ignored in runtime evaluatoin
     while len(sys.argv) > 1:
         arg = sys.argv.pop(1)
         
@@ -87,12 +87,12 @@ def parse_command():
                     end_index = i
                     break
             
-            # remove the entire gene name from the parsing arguments to ready for next potential filter
+            # Remove the entire gene name from the parsing arguments to ready for next potential filter
             if end_index:
                 name = " ".join(sys.argv[1:end_index])
                 del sys.argv[1:end_index]
             
-            # if -n <str> are the final argumetns
+            # If -n <str> are the final argumetns
             else:
                 name = " ".join(sys.argv[1:])
                 del sys.argv[1:]
@@ -135,10 +135,10 @@ def parse_command():
     return options, filtering
 
 #### Functions for and writing loading files ####
-# overall for cytoload: O(k)
-def cytoload(oldfile):
+# Overall for cytoload: O(k)
+def cytoload(old_file):
     """ Loading cytoscape files from already mined tax IDs """
-    with open(oldfile) as infile:
+    with open(old_file) as infile:
         instance_dict = {}
         # O(k)
         for line in infile:
@@ -146,17 +146,17 @@ def cytoload(oldfile):
                 # O(1), since instance dict has 3 collumns (constant)
                 parts = line.strip().split("\t") 
 
-                # not accepting less than 3 tab seperated elements but still ignores empty lines
+                # Not accepting less than 3 tab seperated elements but still ignores empty lines
                 if parts == [""]:
                     continue
                 if len(parts) < 3:
-                    raise ValueError(f"Unable to load from malformed cytofile: {oldfile}")
+                    raise ValueError(f"Unable to load from malformed cytofile: {old_file}")
             
                 instance_dict[(parts[0], parts[1])] = int(parts[2])
 
     # Refuse to load empty file
     if instance_dict == {}:
-        raise ValueError(f"Can't load empty file: {oldfile}")
+        raise ValueError(f"Can't load empty file: {old_file}")
 
     # Worst case for the function is O(k+1). Simplified O(k).
     return instance_dict    
@@ -181,10 +181,10 @@ def cytowrite(cytofile:str,instance_dict:dict,info_txt=None):
 
 if __name__ == "__main__":
     # Obtain options from commandline
-    file_options,filtering = parse_command()
+    file_options,filtering = parsecommand()
     # Obtain date, and add underscore so it can be used in filename
     date = "_".join( str(datetime.now()).split() )
-    pubID2names = None
+    pub_ID2_names = None
 
     try:
         # Find out if Taxid already had been mined, 
@@ -200,7 +200,7 @@ if __name__ == "__main__":
             # Process infomation from genbank files to a dict
             # pubID2names = {PubmedID : {set of gene names that has this ID}}
             # Constant runtime: O(1) 
-            pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
+            pub_ID2_names = taxfilter(filename_info,file_gene_2_PubMed,file_options["tax_id"])
             print("Loaded files successfully to a dictionary.")
 
             # Process information further
@@ -209,7 +209,7 @@ if __name__ == "__main__":
                 print("Combining names...")
                 print("Quick filtering activated.")
                 # O(n^2*m), worst case. See namecombiner. 
-                instance_dict = combinations(pubID2names,file_options["quick_filter"],file_options["sampling"])
+                instance_dict = combinations(pub_ID2_names,file_options["quick_filter"],file_options["sampling"])
                 print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + "_quick_filtered_" + date + ".csv"}...")
                 # writing file, specifying that it is quickfiltered in filename and in file info txt
                 file_txt = f"#Tax ID: {file_options["tax_id"]}. Quick filtered with max length {file_options["quick_filter"]}. Sampling: {file_options["sampling"]}"
@@ -218,7 +218,7 @@ if __name__ == "__main__":
             else:
                 print("Combining names...")
                 # O(n^2*m) see namecombiner
-                instance_dict = combinations(pubID2names)
+                instance_dict = combinations(pub_ID2_names)
                 # Save unfiltered version for later use 
                 print(f"Done combining. Writing file to {"cytofile_" + file_options["tax_id"] + ".csv"}...")
                 file_txt = f"#Tax ID: {file_options["tax_id"]}. Unfiltered cytofile."
@@ -234,14 +234,14 @@ if __name__ == "__main__":
             print("Filtering started...")
             if file_options["connection_filtering"] != None:
                 # If file for tax ID is already loaded, instance dict must be made
-                if pubID2names == None:
+                if pub_ID2_names == None:
                     # O(1)
-                    pubID2names = taxfilter(filename_info,file_gene2pubmed,file_options["tax_id"])
+                    pub_ID2_names = taxfilter(filename_info,file_gene_2_PubMed,file_options["tax_id"])
                 print("Creating connections...")
 
-                #notice that this filter is the only to use pubID2names instead of instance_dict
+                # Notice that this filter is the only to use pubID2names instead of instance_dict
                 # O(n^2*m)
-                instance_dict, connection_op = connectionfilter(pubID2names,file_options["connection_filtering"])
+                instance_dict, connection_op = connectionfilter(pub_ID2_names,file_options["connection_filtering"])
                 file_options["connection_filtering"] = connection_op + " " + str(file_options["connection_filtering"])
             if file_options["weight_filtering"] != None:
                 # O(k)

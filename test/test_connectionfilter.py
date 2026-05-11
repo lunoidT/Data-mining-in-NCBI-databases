@@ -6,27 +6,29 @@ from func.namecombiner import combinations
 
 # Because of the wrapper in the filtering.py, which requires user input, it is difficult to call the function from import.
 # Therefore the function is inserted directly in this file:
-def connectionfilter(pubidnames:dict, min_connections:int, op:str):
-    """ Selects entries with a specific amount of connections to same common PubMed ID. """
+def connectionfilter(Pub_ID_2_names:dict, min_connections:int, op:str):
+    """ Selects entries with a specific amount of connections to the same common pubmedID."""
     from func.namecombiner import combinations
 
     # creates the instance_dict (here connection_dict to differentiate) whilst filtering
     connection_dict = dict()
 
-    # O(m) (m due to us looping over pubIDs instead of names from the instance_dict)
-    for connected_instance in pubidnames:
-        if eval(f"{len(pubidnames[connected_instance])} {op} {min_connections}"):
-            connection_dict[connected_instance] = pubidnames[connected_instance]
-
+    # O(m) (m due to us looping over pubIDs instead of connections from the instance_dict)
+    for connected_instance in Pub_ID_2_names:
+        if eval(f"{len(Pub_ID_2_names[connected_instance])} {op} {min_connections}"):
+            connection_dict[connected_instance] = Pub_ID_2_names[connected_instance]
     # creates a dictionary for all combinations with the remaining entires after filtering 
-    # O(m*k^2) will be the worst case scenario here. See namecombiner.py for distinctions between cases.
     try:
+        #  O(n^2*m) will be the worst case scenario here. See namecombiner.py for distinctions between cases.
         combined_dict = combinations(connection_dict)
     # if all entries are removed by filter, combinations will raise ValueError
     except ValueError:
         combined_dict = {}
+    
+    if len(Pub_ID_2_names) == len(connection_dict):
+        print("This filter did nothing with your chosen parameters")
 
-    # Overall runtime O(m*k^2 + m + 1). Simplified: O(m*k^2)
+    # Overall runtime O(n^2*m + m + 1). Simplified: O(n^2*m)
     return (combined_dict), op
 
 ### Input and output ###
