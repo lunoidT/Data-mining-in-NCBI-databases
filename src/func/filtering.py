@@ -11,20 +11,20 @@ def progresslength(func):
 
         # Variables for progress bar
         prog_len = [0,len(input_dict)]
-
+ 
         return func(input_dict,parameter,prog_len)
     return progressparameter
 
 def filterwrapper(func):
     # Filterwrapper will always (if called) be called after progresslength and therefore has an additional parameter
-    def compops(input_dict:dict, weight:int, op:str, prog_len:list[int,int]):
+    def compops(input_dict:dict, weight:int, prog_len:list[int,int]):
         
+        op = input(f"You've chosen the {str(func).split(' ')[1]}. Please choose one of the following arguments for the filter: less, great, eq, neq\n"
+                   "Eg. all values lesser/greater than selected weight x or (not) equal to amount of connections, etc.\n").strip()    
         # Find and return comperative operator for the selected filter (while loop allows for mistakes without crashing the program)
         while op not in {"less", "great", "eq", "neq"}: 
-            op = input(f"You've chosen the {str(func).split(' ')[1]}. Please choose one of the following arguments for the filter: less, great, eq, neq\n"
-                   "Eg. all values lesser/greater than selected weight x or (not) equal to amount of connections, etc.\n").strip()        
-            if op not in {"less", "great", "eq", "neq"}:
-                print(f"The filter isn't filtering due to wrongful argument {op}. Try again!")
+            print(f"The filter isn't filtering due to wrongful argument {op}. Try again!")
+            op = input(f'You may write "less", "great", "eq" or "neq"')      
            
         print(f"You chose {op}. Initiating:")
 
@@ -100,17 +100,17 @@ def connectionfilter(Pub_ID_2_names:dict, min_connections:int, op:str, prog_len:
     return (combined_dict), op
 
 @progresslength
-def namefilter(instance_dict:dict, gene_name:str, op:str, prog_len:list[int,int]):
+def namefilter(instance_dict:dict, gene_name:str, prog_len:list[int,int]):
     """ Selects all connections of entries with a specific mentioned gene name."""
     namefitered_dict = dict()
-  
+    
     # Find and return operator for weightfiltering (while loop allows for mistakes without crashing the program)
-    while op not in {"including", "excluding"}: 
-        op = input("You've selected namefilter. Please choose one of the following arguments: including, excluding\n"
+    op = input("You've selected namefilter. Please choose one of the following arguments: including, excluding\n"
             f"E.g. all entries including/excluding this genename: {gene_name}\n").strip()
-        if op not in {"including", "excluding"}:
-            print(f"The filter isn't filtering due to wrongful argument {op}. Try again!")
-
+    while op not in {"including", "excluding"}: 
+        print(f"The filter isn't filtering due to wrongful argument {op}. Try again!")
+        op = input(f'You may write "less", "great", "eq" or "neq"')      
+           
     print(f"You chose {op}. Initiating:")
 
     # Check if the sought gene name is present in each entry
