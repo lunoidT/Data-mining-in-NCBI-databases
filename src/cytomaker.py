@@ -13,8 +13,8 @@ from func.namecombiner import combinations
 from func.filtering import weightfilter, connectionfilter, namefilter, sumofconnectionfilter
 
 # Files
-filename_info = "smalldummy_info" #"gene_info"
-file_gene_2_PubMed = "dummy2pubmed"
+filename_info = "inputfiles/gene_info" 
+file_gene_2_PubMed = "inputfiles/gene2pubmed"
 file_path = "cytofiles/"
 
 #### Funtions for parsing commandline ###
@@ -161,7 +161,7 @@ def cytoload(old_file):
     # Worst case for the function is O(k+1). Simplified O(k).
     return instance_dict    
 
-# overall for cytowrite: O(k)
+# Overall for cytowrite: O(k)
 def cytowrite(cytofile:str,instance_dict:dict,info_txt=None):
     """ Writes dictionary to file """
     # Making dict readable for cytoscape

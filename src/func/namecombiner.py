@@ -42,17 +42,17 @@ def combinations(pub_ID_2_names:dict,max_size=-1,sampling=None) -> dict:
             # New list length 
             names = sample(names,max_size)
 
-        # No quick filtering or quickfilter, but acceptable amount of gene names
+        # No quick filtering or quick filtering, but acceptable amount of gene names
         if max_size == -1 or len(names) <= max_size:
             # Make all combinations
             # O(n^2) due to nested loop.
             for i in range(len(names)-1):
                 # O(n), worst case
                 for j in range(i+1,len(names)):
-
-                    # Add to dict / increment
+                    # Create name pair
                     # O(1), since sorted is on a list with a constant length of 2
                     name_pair = tuple(sorted([names[i],names[j]]))
+                    # Add to dict / increment
                     # O(1), since instance_dict is a dict
                     if name_pair not in instance_dict:
                         instance_dict[name_pair] = 1

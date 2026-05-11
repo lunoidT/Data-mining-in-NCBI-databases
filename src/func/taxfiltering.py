@@ -20,6 +20,7 @@ def taxfilter(file_info,file_gene_2_pubmed,tax_id:str) -> dict:
         for line in infile:
             if line.startswith(tax_id):
                 line_list = line.strip().split("\t")
+                # At index 1 is gene ID, at index 8 is gene name
                 geneID_to_name[line_list[1]] = line_list[8]
 
             # Updating progress bar
@@ -36,10 +37,12 @@ def taxfilter(file_info,file_gene_2_pubmed,tax_id:str) -> dict:
             if line.startswith(tax_id):
                 line_list = line.split()
                 geneID, PubID = line_list[1], line_list[2]
+                # Creating set for each PubMed ID found for taxID
                 # O(1) since pubID2names is a dict
                 if PubID not in pubID2names:
                     pubID2names[PubID] = set()
                 try:
+                    # Adding the gene names to set
                     pubID2names[PubID].add(geneID_to_name[geneID])
                 except KeyError as key_err:
                     # raising again for unittesting
