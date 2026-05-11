@@ -27,9 +27,9 @@ def taxfilter(file_info,file_gene_2_pubmed,tax_id:str) -> dict:
             progressbar(progress,max_len)
 
     # Create dict containing Pubmed connections
-    # pubID2namelist = {PubmedID : {set of gene names that has this ID}}
-    pubID2names = {}
     with open(file_gene_2_pubmed) as infile:
+        # pubID2namelist = {PubmedID : {set of gene names that has this ID}}
+        pubID2names = {}
         # Simmilarly to above, the file size is constant in the context of our program
         # O(1)
         for line in infile:
