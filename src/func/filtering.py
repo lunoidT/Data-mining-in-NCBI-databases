@@ -157,7 +157,7 @@ def sumofconnectionfilter(instance_dict:dict, target_sum:int, op:str,prog_len:li
         # prog_length updates in half time due to us looping through 2 loops within the same filter
         prog_len[0] += .5
         # O(1*1), since constant range of for loop.
-        for i in range([0,1]):
+        for i in range(2):
             # sums the weight (amount of connections) for each individual gene
             # O(1), since connection dict is a dictionary
             if (connected_instance[i] in connection_dict):
